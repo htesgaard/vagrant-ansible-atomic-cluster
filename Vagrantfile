@@ -89,20 +89,20 @@ Vagrant.configure("2") do |config|
   config.vbguest.iso_path = "http://download.virtualbox.org/virtualbox/%{version}/VBoxGuestAdditions_%{version}.iso"
   config.vbguest.auto_update = true
 
-  ansibleBoxImage = "centos/7"
+  controlBoxImage = "centos/7"
   atomicBoxImage = "centos/atomic-host"
 
   config.vm.provision "shell", inline: "echo 'Hello from Guest'"
 
-  config.vm.define "ansible", primary: true do |h|
-    h.vm.box = ansibleBoxImage
-    h.vm.hostname = "ansible"
+  config.vm.define "control", primary: true do |h|
+    h.vm.box = controlBoxImage
+    h.vm.hostname = "control"
     # force virtualbox as mechanism for shared folders
     h.vm.synced_folder ".", "/vagrant", type: "virtualbox"
     h.vm.network "private_network", ip: "192.168.56.2"
     h.vm.provider :virtualbox do |v|
       #v.customize ["modifyvm", :id, "--memory", 2048]
-      v.customize ["modifyvm", :id, "--name", "ansible"]
+      v.customize ["modifyvm", :id, "--name", "control"]
       # On CentOS support guest additions and functional vboxsf
       v.check_guest_additions = true
       v.functional_vboxsf     = true
