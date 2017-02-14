@@ -169,9 +169,6 @@ EOF
       minion.vm.synced_folder ".", "/vagrant", disabled: true
 
       minion.vm.network "private_network", ip: "192.168.56.#{n+20}"
-      minion.vm.provision "file", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
-      minion.vm.provision "shell", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
-
       minion.vm.provider :virtualbox do |v|
         v.customize ["modifyvm", :id, "--memory", 2048]
         v.customize ["modifyvm", :id, "--name", "minion#{n}"]
