@@ -9,10 +9,10 @@ A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 All nodes are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
 This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
 
-Vagrant controls the virtual machines using ssh port-forwarding on the 'default' NAT atapter. It's port forwarding on
+Vagrant controls the virtual boxs using ssh port-forwarding on the 'default' NAT atapter. It's port forwarding on
 the default NAT adapter thats used when you ssh into the box using `vagrant ssh <node>`.
         
-The purpose of the Host-Only adapter is to allow the machines to see each other. It's a virtual network segment.
+The purpose of the Host-Only adapter is to allow the boxs to see each other. It's a virtual network segment.
 In that way we build a multi-machine setup that acts like real machines.
 
 Hostfiles are automatically configured, so any host can ping the other hosts by their names. The vagrant plugin
@@ -40,7 +40,7 @@ The multi-machine topology:
 |   |  After '^agrant up',              +-----+minion2+-----+ <- port forwarding|
 |   |  use '^agrant ssh control'        |     +-------+     |   |               |
 |   |  to enter the Ansible control     |                   |   |               |
-|   |  machine                          |     +-------+     |   |               |
+|   |  box                              |     +-------+     |   |               |
 |   |                                   +-----+minion3+-----+   |               |
 |   |                              Host-only  +-------+ NAT     |               |
 |   |                              network              network |               |
@@ -52,14 +52,14 @@ Created using: http://asciiflow.com/
 ```
 
 ##ssh pki authentication 
-An example showing how the nodes can be accessed directly without authentication because 'contol' machine public key is
+An example showing how the nodes can be accessed directly without authentication because 'contol' box public key is
 included in `.ssh/authorized_keys` on all the other nodes.
 
-E.g. from the 'control' machine 'minion1' can be accessed directly without entering any passwords using the command: `ssh minion1`.
+From the 'control' box 'minion1' can be accessed directly without entering any passwords using the command: `ssh minion1`.
 
 Detailed example:
 ```bash
-user@machine ~/projects/vagrant/vagrant-ansible-atomic-cluster
+user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
 $ vagrant ssh control
 Last login: Tue Feb 14 15:09:31 2017 from 10.0.2.2
 [vagrant@control ~]$ ssh minion1
