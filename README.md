@@ -1,6 +1,6 @@
 # vagrant-ansible-atomic-cluster
 
-#"Prerequisites
+#Prerequisites
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://www.vagrantup.com/docs/installation/)
 
@@ -8,8 +8,8 @@
 All nodes are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
 This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
 
-Vagrant controls the virtual machines using ssh port-forwarding on the 'default' NAT atapter. That's also whats used
-when you do a `vagrant ssh <node>`.
+Vagrant controls the virtual machines using ssh port-forwarding on the 'default' NAT atapter. It's port forwarding on
+the default NAT adapter thats used when you ssh into the box using `vagrant ssh <node>`.
         
 The purpose of the Host-Only adapter is to allow the machines to see each other. It's a virtual network segment.
 In that way we build a multi-machine setup that acts like real machines.
