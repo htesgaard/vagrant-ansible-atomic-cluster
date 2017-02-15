@@ -62,6 +62,6 @@ Ansible is alredy installed on the 'control' node. Configure Ansible the current
 by following guide [here](http://docs.ansible.com/ansible/intro_inventory.html)
 
 ## Configure Kubernetes
-Configure Kubernetes manually by following the guide [here] ()http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
+Configure Kubernetes manually by following the guide [here](http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
 
 When that is done, reset the atomic nodes using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.  
