@@ -123,9 +123,8 @@ Atomic is "immutable infrastructure to deploy and scale your containerized appli
 best platform for your Linux Docker Kubernetes (LDK) application stack."
 The intention is not to allow tainting the kernel.
 
-## Getting started
+# Getting started
 To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes using the command `vagrant up`.
-
 
 ## Configure Ansible
 Ansible is alredy installed on the _control_ _box. Configure Ansible the current topology 
