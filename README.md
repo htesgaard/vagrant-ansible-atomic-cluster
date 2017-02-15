@@ -59,7 +59,7 @@ Connection to 127.0.0.1 closed.
 
 ## Configure Ansible
 Ansible is alredy installed on the 'control' node. Configure Ansible the current topology 
-by following step 1-3 [here](https://github.com/leucos/ansible-tuto)
+by following guide [here](http://docs.ansible.com/ansible/intro_inventory.html)
 
 ## Configure Kubernetes
 Configure Kubernetes manually by following the guide [here] ()http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
