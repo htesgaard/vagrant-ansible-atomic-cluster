@@ -185,7 +185,8 @@ When that is done, reset the atomic _boxes using the command ´vagrant destroy -
  ```bash
 vagrant suspend && vagrant resume
  ``` 
- ###Stopping and starting
+
+###Stopping and starting
  ```bash
 vagrant halt && vagrant up 
   ```
