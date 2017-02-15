@@ -1,4 +1,5 @@
 # vagrant-ansible-atomic-cluster
+A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 
 #Prerequisites
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
