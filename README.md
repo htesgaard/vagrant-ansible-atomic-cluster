@@ -1,31 +1,64 @@
 # vagrant-ansible-atomic-cluster
 
-#Prerequisites
-* Virtualbox
-* Vagrant
+#"Prerequisites
+* [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
+* [Vagrant](https://www.vagrantup.com/docs/installation/)
 
+##A note on vagrant/virtualbox networking
+All nodes are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
+This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
 
-The system topology is:
+Vagrant controls the virtual machines using ssh port-forwarding on the 'default' NAT atapter. That's also whats used
+when you do a `vagrant ssh <node>`.
+        
+The purpose of the Host-Only adapter is to allow the machines to see each other. It's a virtual network segment.
+In that way we build a multi-machine setup that acts like real machines.
+
+Hostfiles are automatically configured, so any host can ping the other hosts by their names. The vagrant plugin
+'vagrant-hostmanager' takes care of that. 
+
+The multi-machine topology:
+
 ```bash
-$ vagrant status
-Current machine states:
+                                   TOPOLOGY
 
-control                   running (virtualbox) – containing Ansible
-master1                   running (virtualbox) – basic atomic node
-minion1                   running (virtualbox) – basic atomic node
-minion2                   running (virtualbox) – basic atomic node
-minion3                   running (virtualbox) – basic atomic node
++-------------------------------------------------------------------------------+
+|                                                                               |
+|                                                                               |
+|   +-----------------------------------------------------------+               |
+|   |                                                           |               |
+|   |                                         +-------+         |               |
+|   |                                   +-----+master1+-----+   |               |
+|   |                                   |     +-------+     |   |               |
+|   |                                   |                   |   |               |
+|   |                                   |     +-------+     |   |               |
+|   |                                   +-----+minion1+-----+   |               |
+|   |                 +---------+       |     +-------+     |   |   +-------+   |
+|   |                 | control +-------+                   +-------+Vagrant|   |
+|   |                 +---------+       |     +-------+     |   |   +-------+   |
+|   |  After '^agrant up',              +-----+minion2+-----+ <- port forwarding|
+|   |  use '^agrant ssh control'        |     +-------+     |   |               |
+|   |  to enter the Ansible control     |                   |   |               |
+|   |  machine                          |     +-------+     |   |               |
+|   |                                   +-----+minion3+-----+   |               |
+|   |                              Host-only  +-------+ NAT     |               |
+|   |                              network              network |               |
+|   |Virtualbox                                                 |               |
+|   +-----------------------------------------------------------+               |
+|Host operating system                                                          |
++-------------------------------------------------------------------------------+
+Created using: http://asciiflow.com/
 ```
 
-Hostfiles are automatically configured, so any host can ping the other hosts.
+##ssh pki authentication 
+An example showing how the nodes can be accessed directly without authentication because 'contol' machine public key is
+included in `.ssh/authorized_keys` on all the other nodes.
 
-To get started `git clone` this project and start up the nodes using the command `vagrant up`.
+E.g. from the 'control' machine 'minion1' can be accessed directly without entering any passwords using the command: `ssh minion1`.
 
-The idea is to configure Kubernetes on all the nodes running “atomic” using ansible on ‘contol’ as provisioning tool . All the “atomic” nodes contains kubectl and docker.
-
-ssh pki authentication is configured so you can do:
+Detailed example:
 ```bash
-user@N63531 ~/projects/vagrant/vagrant-ansible-atomic-cluster
+user@machine ~/projects/vagrant/vagrant-ansible-atomic-cluster
 $ vagrant ssh control
 Last login: Tue Feb 14 15:09:31 2017 from 10.0.2.2
 [vagrant@control ~]$ ssh minion1
@@ -57,11 +90,89 @@ logout
 Connection to 127.0.0.1 closed.
 ```
 
+##  Atomic and Centos   
+
+The os-distros used in this setup is
+###Control node
+*[centos7](https://www.centos.org/download/)
+The control vm gets populated with virtualbox guest-additions. That allows it to use
+[virtualbox synched folders](https://www.vagrantup.com/docs/synced-folders/virtualbox.html). In this setup
+the current folder `.` (the folder containing the file 'Vagrantfile') is mapped to the path `/vagrant` inside the guest
+os. I recommend to add a subfolder called ansible where ansible playbooks can be shared between the host and guest os.
+E.g. if you prefer to edit the files in a tool like Intellij on the host os.
+
+
+###Master and minion nodes
+*[atomic](http://www.projectatomic.io/)
+
+Atomic is "immutable infrastructure to deploy and scale your containerized applications. Project Atomic provides the
+best platform for your Linux Docker Kubernetes (LDK) application stack."
+The intention is not to allow tainting the kernel.
+
+## Getting started
+To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the nodes using the command `vagrant up`.
+
+
 ## Configure Ansible
 Ansible is alredy installed on the 'control' node. Configure Ansible the current topology 
 by following guide [here](http://docs.ansible.com/ansible/intro_inventory.html)
 
+To configure ansible to know the topology the /etc/ansible/hosts should contain this configuration
+```bash
+[vagrant@control ansible]$ cat hosts
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+                                                      
+[masters]
+master1
+
+[minions]
+minion[1:3]
+```
+
+To test the setup you should be able to execute the following command with success:
+```bash
+[vagrant@control ansible]$ ansible -m ping all
+master1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+minion3 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+minion2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+minion1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+```
+
+#Exercise
+The idea is to configure Kubernetes on all the nodes running “atomic” using Ansible (on the 'control' node) as provisioning tool. All the “atomic” nodes contains Kubernetes and Docker software including kubectl and docker.
+
 ## Configure Kubernetes
 Configure Kubernetes manually by following the guide [here](http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
 
-When that is done, reset the atomic nodes using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.  
+When that is done, reset the atomic nodes using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.
+  
+## Vagrant tips
+
+###Pausing and resuming
+ ```bash
+vagrant suspend && vagrant resume
+ ``` 
+ ###Stopping and starting
+ ```bash
+vagrant halt && vagrant up 
+  ```
