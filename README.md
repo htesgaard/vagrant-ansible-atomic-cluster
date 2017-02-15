@@ -95,14 +95,28 @@ Connection to 127.0.0.1 closed.
 The os-distros used in this setup is
 ###Control _box
 *[centos7](https://www.centos.org/download/)
+
+#### control box shared folder 
 The control vm gets populated with virtualbox guest-additions. That allows it to use
 [virtualbox synched folders](https://www.vagrantup.com/docs/synced-folders/virtualbox.html). In this setup
 the current folder `.` (the folder containing the file _Vagrantfile_) is mapped to the path `/vagrant` inside the guest
 os. I recommend to add a subfolder called ansible where ansible playbooks can be shared between the host and guest os.
-E.g. if you prefer to edit the files in a tool like Intellij on the host os.
+This is usefull if you prefer to edit the files in a tool like Intellij on the host os and use the file in commands on
+the _control_ box.
+```bash
+host-os@machine ~/projects/vagrant/vagrant-ansible-atomic-cluster
+$ mkdir ansible
+
+host-os@machine ~/projects/vagrant/vagrant-ansible-atomic-cluster
+$ vagrant ssh control
+Last login: Wed Feb 15 13:19:37 2017 from 10.0.2.2
+[vagrant@control ~]$ ls /vagrant/
+ansible  ansible.pub  README.md  Vagrantfile
+[vagrant@control ~]$
+```
 
 
-###Master and minion _boxes
+###Master and minion boxes
 *[atomic](http://www.projectatomic.io/)
 
 Atomic is "immutable infrastructure to deploy and scale your containerized applications. Project Atomic provides the
