@@ -8,10 +8,6 @@ unless Vagrant.has_plugin?("vagrant-vbguest")
   raise 'Missing plugin! Install using the command: vagrant plugin install vagrant-vbguest'
 end
 
-# https://www.vagrantup.com/docs/vagrantfile/tips.html
-ENV["LC_ALL"] = "en_US.UTF-8"
-
-
 #http://www.thisprogrammingthing.com/2015/multiple-vagrant-vms-in-one-vagrantfile/
 
 
