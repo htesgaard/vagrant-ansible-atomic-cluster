@@ -172,7 +172,7 @@ minion1 | SUCCESS => {
 ```
 
 #Exercise
-The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ _box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
+The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
 
 ## Configure Kubernetes
 Configure Kubernetes manually by following the guide [here](http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
