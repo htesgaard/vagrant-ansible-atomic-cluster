@@ -10,7 +10,7 @@ All _boxes_ are configured with two NIC's one [NAT](https://www.virtualbox.org/m
 This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
 
 Vagrant controls the virtual boxes using ssh port-forwarding on the _default_ NAT atapter. It's port forwarding on
-the default NAT adapter thats used when you ssh into the box using `vagrant ssh <_box>`.
+the default NAT adapter thats used when you ssh into the box using `vagrant ssh <box>`.
         
 The purpose of the Host-Only adapter is to allow the boxes to see each other. It's a virtual network segment.
 In that way we build a multi-machine setup that acts like real machines.
@@ -18,7 +18,7 @@ In that way we build a multi-machine setup that acts like real machines.
 Hostfiles are automatically configured, so any host can ping the other hosts by their names. The vagrant plugin
 'vagrant-hostmanager' takes care of that. 
 
-##topology
+##Topology
 
 ```bash
 +-------------------------------------------------------------------------------+
@@ -36,7 +36,7 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 |   |                 | control +-------+                   +-------+Vagrant|   |
 |   |                 +---------+       |     +-------+     |   |   +-------+   |
 |   |  After 'vagrant up',              +-----+minion2+-----+ <- port forwarding|
-|   |  use 'vagrant ssh control'        |     +-------+     |   |               |
+    |   |  use 'vagrant ssh control'        |     +-------+     |   |               |
 |   |  to enter the Ansible control     |                   |   |               |
 |   |  box                              |     +-------+     |   |               |
 |   |                                   +-----+minion3+-----+   |               |
