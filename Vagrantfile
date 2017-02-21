@@ -144,8 +144,7 @@ ANSIBLEHOSTS
 EOF
 
     # Configure run-once provisioning thats activated when user logins to 'control'
-    h.vm.provision :file, source: "./ansible/config/run_once_init.sh", destination: "/home/vagrant/run_once_init.sh"
-    h.vm.provision :shell, privileged: false, inline: "chmod +x ~/run_once_init.sh"
+    h.vm.provision :shell, privileged: false, inline: "cp /vagrant/ansible/config/run_once_init.sh ~ && chmod +x ~/run_once_init.sh"
     h.vm.provision :shell, privileged: false, inline: "echo \"[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh\" >> ~/.bashrc"
   end
 
