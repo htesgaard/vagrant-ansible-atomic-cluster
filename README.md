@@ -36,7 +36,7 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 |   |                 | control +-------+                   +-------+Vagrant|   |
 |   |                 +---------+       |     +-------+     |   |   +-------+   |
 |   |  After 'vagrant up',              +-----+minion2+-----+ <- port forwarding|
-    |   |  use 'vagrant ssh control'        |     +-------+     |   |               |
+|   |  use 'vagrant ssh control'        |     +-------+     |   |               |
 |   |  to enter the Ansible control     |                   |   |               |
 |   |  box                              |     +-------+     |   |               |
 |   |                                   +-----+minion3+-----+   |               |
