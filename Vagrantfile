@@ -123,15 +123,30 @@ Host *
 SSHEOF
 
 chown -R vagrant:vagrant /home/vagrant/.ssh/
+
+sudo cat << 'ANSIBLEHOSTS' > /etc/ansible/hosts
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+[masters]
+master1
+
+[minions]
+minion[1:3]
+ANSIBLEHOSTS
+
 EOF
-    h.vm.provision "file", source: "./provision/ansible/config/hosts", destination: "/etc/ansible/hosts"
-    h.vm.provision :ansible_local do |ansible|
-      ansible.playbook       = "/vagrant/provision/ansible/playbooks/enable_host_only_network_after_reboot.yml"
-      ansible.verbose        = true
-      ansible.install        = true
-      ansible.limit          = "all" # or only "nodes" group, etc.
-      ansible.inventory_path = "inventory"
-    end
+
+    # Configure run-once provisioning thats activated when user logins to 'control'
+    h.vm.provision :file, source: "./ansible/config/run_once_init.sh", destination: "/home/vagrant/run_once_init.sh"
+    h.vm.provision :shell, privileged: false, inline: "chmod +x ~/run_once_init.sh"
+    h.vm.provision :shell, privileged: false, inline: "echo \"[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh\" >> ~/.bashrc"
   end
 
   (1..1).each do |n|
