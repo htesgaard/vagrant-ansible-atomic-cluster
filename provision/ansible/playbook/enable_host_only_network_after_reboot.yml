@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: test connection
+      ping:
+    - name: ensure that the host-only network starts while running on vmware
+      lineinfile:
+        dest: /etc/sysconfig/network-scripts/ifcfg-enp0s8
+        regexp: '^NM_CONTROLLED='
+        line: 'NM_CONTROLLED=yes'

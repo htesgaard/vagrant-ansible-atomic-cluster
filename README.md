@@ -175,9 +175,24 @@ minion1 | SUCCESS => {
 The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
 
 ## Configure Kubernetes
-Configure Kubernetes manually by following the guide [here](http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
+Configure Kubernetes manually by following theese guides:
+* [Containerized master](https://wiki.centos.org/SpecialInterestGroup/Atomic/ContainerizedMaster)
+* [Project Atomic Getting Started Guide](http://www.projectatomic.io/docs/gettingstarted/)
+
 
 When that is done, reset the atomic _boxes_ using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.
+  
+## Playbooks
+
+Ensure atomic version 
+```bash
+user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
+$ vagrant ssh control
+Last login: Tue Feb 14 15:09:31 2017 from 10.0.2.2
+[vagrant@control ~]$ cd /vagrant/ansible/playbooks
+[vagrant@control playbooks]$ ansible-playbook ensure_atomic_version.yml
+....
+```
   
 ## Vagrant tips
 

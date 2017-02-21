@@ -124,6 +124,14 @@ SSHEOF
 
 chown -R vagrant:vagrant /home/vagrant/.ssh/
 EOF
+    h.vm.provision "file", source: "./provision/ansible/config/hosts", destination: "/etc/ansible/hosts"
+    h.vm.provision :ansible_local do |ansible|
+      ansible.playbook       = "/vagrant/provision/ansible/playbooks/enable_host_only_network_after_reboot.yml"
+      ansible.verbose        = true
+      ansible.install        = true
+      ansible.limit          = "all" # or only "nodes" group, etc.
+      ansible.inventory_path = "inventory"
+    end
   end
 
   (1..1).each do |n|
