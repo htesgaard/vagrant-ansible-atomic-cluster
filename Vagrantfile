@@ -82,7 +82,7 @@ Vagrant.configure("2") do |config|
 
   config.hostmanager.enabled = true
 
-  config.vbguest.iso_path = "http://download.virtualbox.org/virtualbox/%{version}/VBoxGuestAdditions_%{version}.iso"
+  #config.vbguest.iso_path = "http://download.virtualbox.org/virtualbox/%{version}/VBoxGuestAdditions_%{version}.iso"
   config.vbguest.auto_update = true
 
   controlBoxImage = "centos/7"

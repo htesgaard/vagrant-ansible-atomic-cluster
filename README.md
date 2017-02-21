@@ -6,7 +6,7 @@ A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 * [Vagrant](https://www.vagrantup.com/docs/installation/)
 
 ##A note on vagrant/virtualbox networking
-All _boxes are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
+All _boxes_ are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
 This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
 
 Vagrant controls the virtual boxes using ssh port-forwarding on the _default_ NAT atapter. It's port forwarding on
@@ -52,8 +52,8 @@ Created using: http://asciiflow.com/
 ##Usage
 
 ##ssh pki authentication 
-An example showing how the _boxes can be accessed directly without authentication because _contol_ box public key is
-included in `.ssh/authorized_keys` on all the other _boxes.
+An example showing how the _boxes_ can be accessed directly without authentication because _contol_ box public key is
+included in `.ssh/authorized_keys` on all the other _boxes_.
 
 From the _control_ box _minion1_ can be accessed directly without entering any passwords using the command: `ssh minion1`.
 
@@ -124,7 +124,7 @@ best platform for your Linux Docker Kubernetes (LDK) application stack."
 The intention is not to allow tainting the kernel.
 
 # Getting started
-To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes using the command `vagrant up`.
+To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes_ using the command `vagrant up`.
 
 ## Configure Ansible
 Ansible is alredy installed on the _control_ _box. Configure Ansible the current topology 
@@ -172,21 +172,21 @@ minion1 | SUCCESS => {
 ```
 
 #Exercise
-The idea is to configure Kubernetes on all the _boxes running “atomic” using Ansible (on the _control_ _box) as provisioning tool. All the “atomic” _boxes contains Kubernetes and Docker software including kubectl and docker.
+The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
 
 ## Configure Kubernetes
 Configure Kubernetes manually by following the guide [here](http://www.projectatomic.io/blog/2016/09/running-kubernetes-in-containers-on-atomic/)
 
-When that is done, reset the atomic _boxes using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.
+When that is done, reset the atomic _boxes_ using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.
   
 ## Vagrant tips
 
 ###Pausing and resuming
- ```bash
+```bash
 vagrant suspend && vagrant resume
- ``` 
+``` 
 
 ###Stopping and starting
- ```bash
+```bash
 vagrant halt && vagrant up 
-  ```
+```
