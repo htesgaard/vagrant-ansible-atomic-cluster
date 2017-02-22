@@ -145,8 +145,7 @@ RUBY_HERE_DOCUMENT1
 
 
     # Configure run-once provisioning thats activated when user logins to 'control'
-    h.vm.provision "shell", privileged: false, run: "always", :inline => <<'RUBY_HERE_DOCUMENT2'
-
+    h.vm.provision "shell", privileged: false, :inline => <<'RUBY_HERE_DOCUMENT2'
 sudo cat << BASH_HERE_DOCUMENT > /home/vagrant/run_once_init.sh
 #!/usr/bin/env bash
 echo "run-once provisioning start"
