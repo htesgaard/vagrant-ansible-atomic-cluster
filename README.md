@@ -7,8 +7,7 @@ A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 
 Vagrant modules
 ```bash
-$ vagrant plugin install vagrant-vbguest
-$ vagrant plugin install vagrant-hostmanager
+$ vagrant plugin install vagrant-vbguest && vagrant plugin install vagrant-hostmanager
 ```
 
 
