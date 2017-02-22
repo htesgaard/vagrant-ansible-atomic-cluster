@@ -116,7 +116,7 @@ fi
 cp /home/vagrant/.ssh/id_rsa.pub /vagrant/ansible.pub
 
 
-cat << 'SSHEOF' > /home/vagrant/.ssh/config
+cat << SSHEOF > /home/vagrant/.ssh/config
 Host *
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
@@ -124,7 +124,7 @@ SSHEOF
 
 chown -R vagrant:vagrant /home/vagrant/.ssh/
 
-sudo cat << 'ANSIBLEHOSTS' > /etc/ansible/hosts
+sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 # This is the default ansible 'hosts' file.
 #
 # It should live in /etc/ansible/hosts
@@ -139,12 +139,26 @@ master1
 
 [minions]
 minion[1:3]
-ANSIBLEHOSTS
+ANSIBLEHOSTSEOF
+
+sudo cat << RUNONCESCRIPTEOF > /home/vagrant/run_once_init.sh
+#!/usr/bin/env bash
+echo "run-once provisioning start"
+ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
+if [ $? -eq 0 ] ; then
+  rm ~/run_once_init.sh
+  echo "run-once provisioning ompleted"
+
+else
+  echo "run-once provisioning failed"
+fi
+
+RUNONCESCRIPTEOF
 
 EOF
 
     # Configure run-once provisioning thats activated when user logins to 'control'
-    h.vm.provision :shell, privileged: false, inline: "cp /vagrant/ansible/config/run_once_init.sh ~ && chmod +x ~/run_once_init.sh"
+    h.vm.provision :shell, privileged: false, inline: "sudo chown vagrant.vagrant ~/run_once_init.sh && chmod +x ~/run_once_init.sh"
     h.vm.provision :shell, privileged: false, inline: "echo \"[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh\" >> ~/.bashrc"
   end
 
