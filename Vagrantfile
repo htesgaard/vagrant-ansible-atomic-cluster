@@ -109,7 +109,7 @@ Vagrant.configure("2") do |config|
     h.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
     h.vm.provision "shell", inline: "yum install epel-release -y"
     h.vm.provision "shell", inline: "yum install ansible -y"
-    h.vm.provision :shell, :inline => <<'EOF'
+    h.vm.provision "shell", :inline => <<'EOF'
 if [ ! -f "/home/vagrant/.ssh/id_rsa" ]; then
   ssh-keygen -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
 fi
@@ -141,7 +141,15 @@ master1
 minion[1:3]
 ANSIBLEHOSTSEOF
 
-sudo cat << RUNONCESCRIPTEOF > /home/vagrant/run_once_init.sh
+
+
+EOF
+
+
+    # Configure run-once provisioning thats activated when user logins to 'control'
+    h.vm.provision "shell", privileged: false, run: "always", :inline => <<'RUBY_HERE_DOCUMENT'
+
+sudo cat << BASH_HERE_DOCUMENT > /home/vagrant/run_once_init.sh
 #!/usr/bin/env bash
 echo "run-once provisioning start"
 ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
@@ -152,14 +160,15 @@ if [ $? -eq 0 ] ; then
 else
   echo "run-once provisioning failed"
 fi
+BASH_HERE_DOCUMENT
 
-RUNONCESCRIPTEOF
+chmod +x ~/run_once_init.sh
 
-EOF
+# append to .bashrc if missing
+grep run_once_init.sh .bashrc || echo "[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh" >> ~/.bashrc
 
-    # Configure run-once provisioning thats activated when user logins to 'control'
-    h.vm.provision :shell, privileged: false, inline: "sudo chown vagrant.vagrant ~/run_once_init.sh && chmod +x ~/run_once_init.sh"
-    h.vm.provision :shell, privileged: false, inline: "echo \"[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh\" >> ~/.bashrc"
+RUBY_HERE_DOCUMENT
+#    h.vm.provision "shell", privileged: false, inline: "echo \"[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh\" >> ~/.bashrc"
   end
 
   (1..1).each do |n|
