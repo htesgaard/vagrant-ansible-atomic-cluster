@@ -151,20 +151,6 @@ RUBY_HERE_DOCUMENT1
     # Configure run-once provisioning thats activated when user logins to 'control'
     h.vm.provision "shell", privileged: false, :inline => <<'RUBY_HERE_DOCUMENT2'
 echo "provisioning as user: $USER" 
-sudo cat << BASH_HERE_DOCUMENT > /vagrant/run_once_init.sh
-#!/usr/bin/env bash
-echo "one-shot provisioning start"
-ansible-playbook -v /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
-if [ $? -eq 0 ] ; then
-  rm /vagrant/run_once_init.sh
-  echo "one-shot provisioning completed"
-
-else
-  echo "one-shot provisioning failed"
-fi
-BASH_HERE_DOCUMENT
-
-chmod +x /vagrant/run_once_init.sh
 
 # append to .bashrc if missing
 grep run_once_init.sh .bashrc || echo "[ ! -f /vagrant/run_once_init.sh ] || chmod +x /vagrant/run_once_init.sh && /vagrant/run_once_init.sh" >> ~/.bashrc
