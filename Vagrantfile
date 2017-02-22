@@ -106,10 +106,14 @@ Vagrant.configure("2") do |config|
 
     # centos hack to get the private_network going
     h.vm.provision "shell", run: "always", inline: "systemctl restart network"
-    h.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
-    h.vm.provision "shell", inline: "yum install epel-release -y"
-    h.vm.provision "shell", inline: "yum install ansible -y"
     h.vm.provision "shell", :inline => <<'RUBY_HERE_DOCUMENT1'
+echo 'provisioning as user: root'    
+
+echo 'LC_CTYPE="en_US.UTF-8"' | sudo tee -a /etc/environment
+
+yum install epel-release -y
+yum install ansible -y
+
 if [ ! -f "/home/vagrant/.ssh/id_rsa" ]; then
   ssh-keygen -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
 fi
@@ -146,6 +150,7 @@ RUBY_HERE_DOCUMENT1
 
     # Configure run-once provisioning thats activated when user logins to 'control'
     h.vm.provision "shell", privileged: false, :inline => <<'RUBY_HERE_DOCUMENT2'
+echo 'provisioning as user: vagrant'
 sudo cat << BASH_HERE_DOCUMENT > /home/vagrant/run_once_init.sh
 #!/usr/bin/env bash
 echo "run-once provisioning start"
@@ -163,6 +168,8 @@ chmod +x ~/run_once_init.sh
 
 # append to .bashrc if missing
 grep run_once_init.sh .bashrc || echo "[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh" >> ~/.bashrc
+
+ls -la ~
 
 RUBY_HERE_DOCUMENT2
   end
