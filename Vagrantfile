@@ -153,21 +153,21 @@ RUBY_HERE_DOCUMENT1
 echo "provisioning as user: $USER" 
 sudo cat << BASH_HERE_DOCUMENT > /vagrant/run_once_init.sh
 #!/usr/bin/env bash
-echo "run-once provisioning start"
+echo "one-shot provisioning start"
 ansible-playbook -v /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
 if [ $? -eq 0 ] ; then
   rm /vagrant/run_once_init.sh
-  echo "run-once provisioning completed"
+  echo "one-shot provisioning completed"
 
 else
-  echo "run-once provisioning failed"
+  echo "one-shot provisioning failed"
 fi
 BASH_HERE_DOCUMENT
 
 chmod +x /vagrant/run_once_init.sh
 
 # append to .bashrc if missing
-grep run_once_init.sh .bashrc || echo "[ ! -f /vagrant/run_once_init.sh ] || /vagrant/run_once_init.sh" >> ~/.bashrc
+grep run_once_init.sh .bashrc || echo "[ ! -f /vagrant/run_once_init.sh ] || chmod +x /vagrant/run_once_init.sh && /vagrant/run_once_init.sh" >> ~/.bashrc
 
 ls -la /vagrant/
 
@@ -210,7 +210,7 @@ RUBY_HERE_DOCUMENT2
       #end
       minion.vm.box = atomicBoxImage
       minion.vm.hostname = "minion#{n}"
-      minion.vm.synced_folder ".", "/vagrant", disabled: true
+      #minion.vm.synced_folder ".", "/vagrant", disabled: true
 
       minion.vm.network "private_network", ip: "192.168.56.#{n+20}"
       minion.vm.provider :virtualbox do |v|
