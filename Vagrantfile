@@ -150,10 +150,10 @@ RUBY_HERE_DOCUMENT1
 sudo cat << BASH_HERE_DOCUMENT > /home/vagrant/run_once_init.sh
 #!/usr/bin/env bash
 echo "run-once provisioning start"
-ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
+ansible-playbook -v /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
 if [ $? -eq 0 ] ; then
   rm ~/run_once_init.sh
-  echo "run-once provisioning ompleted"
+  echo "run-once provisioning completed"
 
 else
   echo "run-once provisioning failed"
@@ -166,7 +166,6 @@ chmod +x ~/run_once_init.sh
 grep run_once_init.sh .bashrc || echo "[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh" >> ~/.bashrc
 
 RUBY_HERE_DOCUMENT2
-#    h.vm.provision "shell", privileged: false, inline: "echo \"[ ! -f ~/run_once_init.sh ] || ~/run_once_init.sh\" >> ~/.bashrc"
   end
 
   (1..1).each do |n|
