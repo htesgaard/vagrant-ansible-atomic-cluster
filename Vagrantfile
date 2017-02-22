@@ -143,6 +143,7 @@ master1
 
 [minions]
 minion[1:3]
+
 ANSIBLEHOSTSEOF
 
 RUBY_HERE_DOCUMENT1
