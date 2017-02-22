@@ -5,6 +5,13 @@ A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://www.vagrantup.com/docs/installation/)
 
+Vagrant modules
+```bash
+$ vagrant plugin install vagrant-vbguest
+$ vagrant plugin install vagrant-hostmanager
+```
+
+
 ##A note on vagrant/virtualbox networking
 All _boxes_ are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
 This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
