@@ -197,7 +197,7 @@ RUBY_HERE_DOCUMENT2
       #end
       minion.vm.box = atomicBoxImage
       minion.vm.hostname = "minion#{n}"
-      #minion.vm.synced_folder ".", "/vagrant", disabled: true
+      minion.vm.synced_folder ".", "/vagrant", disabled: true
 
       minion.vm.network "private_network", ip: "192.168.56.#{n+20}"
       minion.vm.provider :virtualbox do |v|
