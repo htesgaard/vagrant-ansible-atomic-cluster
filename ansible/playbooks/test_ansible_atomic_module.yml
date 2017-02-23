@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: false
+  become_user: root
+  tasks:
+    - name: get version
+      shell: cat /etc/os-release | grep ^VERSION=
+      register: cat
+    - name: get version output
+      debug: var=cat.stdout_lines
+
+    - name: Upgrade/downgrade the atomic os to a specific version (atomic host upgrade) that supports infiniband
+      atomic_host:
+        # 7.20161006 7.20170209
+        revision: 7.20170209
+      become: true
+
+    - name: waiting for server to come back (might take a while)
+      local_action: wait_for host={{ inventory_hostname }} state=started port=22 delay=20 timeout=90
+
+    - name: get version
+      shell: cat /etc/os-release | grep ^VERSION=
+      register: cat
+    - name: get version output
+      debug: var=cat.stdout_lines

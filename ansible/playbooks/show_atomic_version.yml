@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: false
+  become_user: root
+  tasks:
+    - name: get version
+      shell: cat /etc/os-release | grep ^VERSION=
+      register: cat
+      changed_when: false
+    - name: get version output
+      debug: var=cat.stdout_lines
+
