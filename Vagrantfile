@@ -153,10 +153,7 @@ RUBY_HERE_DOCUMENT1
     h.vm.provision "shell", privileged: false, :inline => <<'RUBY_HERE_DOCUMENT2'
 echo "provisioning as user: $USER" 
 
-# append to .bashrc if missing
-grep run_once_init.sh .bashrc || echo "[ ! -f /vagrant/run_once_init.sh ] || chmod +x /vagrant/run_once_init.sh && /vagrant/run_once_init.sh" >> ~/.bashrc
-
-ls -la /vagrant/
+echo 'echo "run the following command to fix to enable autostart on the host-only network atapters on all the atomic nodes:\nansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml"' >> ~/.bashrc
 
 RUBY_HERE_DOCUMENT2
   end
