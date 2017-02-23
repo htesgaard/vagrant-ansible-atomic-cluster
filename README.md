@@ -177,6 +177,26 @@ minion1 | SUCCESS => {
 }
 ```
 
+#Errors
+
+If you get this error try running `vagrant up` again
+```bash
+==> control: Mounting shared folders...
+    control: /vagrant => /Users/helge/projects/vagrant/vagrant-ansible-atomic-cluster
+Vagrant was unable to mount VirtualBox shared folders. This is usually
+because the filesystem "vboxsf" is not available. This filesystem is
+made available via the VirtualBox Guest Additions and kernel module.
+Please verify that these guest additions are properly installed in the
+guest. This is not a bug in Vagrant and is usually caused by a faulty
+Vagrant box. For context, the command attempted was:
+
+mount -t vboxsf -o uid=1000,gid=1000 vagrant /vagrant
+
+The error output from the command was:
+
+mount: unknown filesystem type 'vboxsf'
+```
+
 #Exercise
 The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
 
