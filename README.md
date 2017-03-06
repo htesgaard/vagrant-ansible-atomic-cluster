@@ -253,10 +253,8 @@ Ensure atomic version
 ```bash
 user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
 $ vagrant ssh control
-Last login: Tue Feb 14 15:09:31 2017 from 10.0.2.2
-[vagrant@control ~]$ cd /vagrant/ansible/playbooks
-[vagrant@control playbooks]$ ansible-playbook ensure_atomic_version.yml
-....
+Last login: Wed Feb 22 16:42:29 2017 from 10.0.2.2
+[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/force_upgrade_downgrade_atomic_version.yml
 ```
   
 ## Vagrant tips
