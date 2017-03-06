@@ -33,19 +33,19 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 |   +-----------------------------------------------------------+               |
 |   |                                                           |               |
 |   |                                         +-------+         |               |
-|   |                                   +-----+master1+-----+   |               |
+|   |                                   +-----+atomic1+-----+   |               |
 |   |                                   |     +-------+     |   |               |
 |   |                                   |                   |   |               |
 |   |                                   |     +-------+     |   |               |
-|   |                                   +-----+minion1+-----+   |               |
+|   |                                   +-----+atomic2+-----+   |               |
 |   |                 +---------+       |     +-------+     |   |   +-------+   |
 |   |                 | control +-------+                   +-------+Vagrant|   |
 |   |                 +---------+       |     +-------+     |   |   +-------+   |
-|   |  After 'vagrant up',              +-----+minion2+-----+ <- port forwarding|
+|   |  After 'vagrant up',              +-----+atomic3+-----+ <- port forwarding|
 |   |  use 'vagrant ssh control'        |     +-------+     |   |               |
 |   |  to enter the Ansible control     |                   |   |               |
 |   |  box                              |     +-------+     |   |               |
-|   |                                   +-----+minion3+-----+   |               |
+|   |                                   +-----+atomic4+-----+   |               |
 |   |                              Host-only  +-------+ NAT     |               |
 |   |                              network              network |               |
 |   |Virtualbox                                                 |               |
@@ -56,6 +56,45 @@ Created using: http://asciiflow.com/
 ```
 
 ##Usage
+
+##Getting started
+The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
+
+Calling vagrant up will cause this error on all the atomic nodes.
+
+```bash
+==> atomic1: Configuring and enabling network interfaces...
+The following SSH command responded with a non-zero exit status.
+Vagrant assumes that this means the command failed!
+
+# Down the interface before munging the config file. This might
+# fail if the interface is not actually set up yet so ignore
+# errors.
+/sbin/ifdown 'enp0s8'
+# Move new config into place
+mv -f '/tmp/vagrant-network-entry-enp0s8-1488809797-0' '/etc/sysconfig/network-scripts/ifcfg-enp0s8'
+# attempt to force network manager to reload configurations
+nmcli c reload || true
+
+# Restart network
+service network restart
+
+
+Stdout from the command:
+
+Restarting network (via systemctl):  [FAILED]
+
+
+Stderr from the command:
+
+usage: ifdown <configuration>
+Job for network.service failed because the control process exited with error code. See "systemctl status network.service" and "journalctl -xe" for details.
+```
+
+But if you rerun 'vagrant up' a second time on all the atomic nodes, it will initialize correctly. So to start this ignoring the errors as a one-liner use this command:    
+```bash
+vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2) && (vagrant up atomic3 || vagrant up atomic3) && (vagrant up atomic4 || vagrant up atomic4)
+```
 
 ##ssh pki authentication 
 An example showing how the _boxes_ can be accessed directly without authentication because _contol_ box public key is

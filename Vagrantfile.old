@@ -1,8 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.require_version ">= 1.9.2"
-
 unless Vagrant.has_plugin?("vagrant-hostmanager")
   raise 'Missing plugin! Install using the command: vagrant plugin install vagrant-hostmanager'
 end
@@ -10,10 +8,8 @@ unless Vagrant.has_plugin?("vagrant-vbguest")
   raise 'Missing plugin! Install using the command: vagrant plugin install vagrant-vbguest'
 end
 
-$vm_gui = false
-$vm_memory = 2048
-$vm_cpus = 1
-$vb_cpuexecutioncap = 100
+#http://www.thisprogrammingthing.com/2015/multiple-vagrant-vms-in-one-vagrantfile/
+
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -26,7 +22,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  #config.vm.box = "centos/atomic-host"
+  # config.vm.box = "base"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -83,43 +79,35 @@ Vagrant.configure("2") do |config|
   #   apt-get install -y apache2
   # SHELL
 
-  # always use Vagrants insecure key
-  config.ssh.insert_key = false
-  # forward ssh agent to easily ssh into the different machines
-  config.ssh.forward_agent = true
 
-  # Enable hostmanager by default - to update /etc/hosts (https://github.com/devopsgroup-io/vagrant-hostmanager)
   config.hostmanager.enabled = true
 
+  #config.vbguest.iso_path = "http://download.virtualbox.org/virtualbox/%{version}/VBoxGuestAdditions_%{version}.iso"
+  config.vbguest.auto_update = true
+
+  controlBoxImage = "centos/7"
+  atomicBoxImage = "centos/atomic-host"
+
+  config.vm.provision "shell", inline: "echo 'Hello from Guest'"
+
   config.vm.define "control", primary: true do |h|
-
-    # plugin conflict
-    if Vagrant.has_plugin?("vagrant-vbguest") then
-      config.vbguest.auto_update = true
-    end
-
-    h.vm.box = "centos/7"
+    h.vm.box = controlBoxImage
     h.vm.hostname = "control"
     # force virtualbox as mechanism for shared folders
     h.vm.synced_folder ".", "/vagrant", type: "virtualbox"
     h.vm.network "private_network", ip: "192.168.56.2"
-    h.vm.provider :virtualbox do |vb|
-      vb.gui = $vm_gui
-      vb.memory = $vm_memory
-      vb.cpus = $vm_cpus
-      vb.customize ['modifyvm', :id, '--cpuexecutioncap', "#{$vb_cpuexecutioncap}"]
-      vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
-      vb.customize ['modifyvm', :id, '--ioapic', 'on']
-
+    h.vm.provider :virtualbox do |v|
+      #v.customize ["modifyvm", :id, "--memory", 2048]
+      v.customize ["modifyvm", :id, "--name", "control"]
       # On CentOS support guest additions and functional vboxsf
-      vb.check_guest_additions = true
-      vb.functional_vboxsf     = true
+      v.check_guest_additions = true
+      v.functional_vboxsf     = true
     end
 
     # centos hack to get the private_network going
     h.vm.provision "shell", run: "always", inline: "systemctl restart network"
     h.vm.provision "shell", :inline => <<'RUBY_HERE_DOCUMENT1'
-echo "provisioning as user: $USER"
+echo "provisioning as user: $USER"    
 
 echo 'LC_CTYPE="en_US.UTF-8"' | sudo tee -a /etc/environment
 
@@ -150,8 +138,11 @@ sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 #   - Groups of hosts are delimited by [header] elements
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
-[nodes]
-atomic[1:4]
+[masters]
+master1
+
+[minions]
+minion[1:3]
 
 ANSIBLEHOSTSEOF
 
@@ -159,34 +150,62 @@ RUBY_HERE_DOCUMENT1
 
   end
 
-  config.vm.provision "shell", inline: "echo 'Hello from All'"
-
-
-  (1..4).each do |n|
-    config.vm.define "atomic#{n}" do |atomic|
-      atomic.vm.provision "shell", inline: "echo 'Hello from Atomic'"
-      # plugin conflict
+  (1..1).each do |n|
+    config.vm.define "master#{n}" do |master|
+      # plugin not supported by centos/atomic-host
       if Vagrant.has_plugin?("vagrant-vbguest") then
         config.vbguest.auto_update = false
       end
-
-      atomic.vm.box = "centos/atomic-host"
-      atomic.vm.hostname = "atomic#{n}"
-      atomic.vm.network "private_network", ip: "192.168.56.#{n+10}"
-
-      atomic.vm.provider :virtualbox do |vb|
-        vb.gui = $vm_gui
-        vb.memory = $vm_memory
-        vb.cpus = $vm_cpus
-        vb.customize ['modifyvm', :id, '--cpuexecutioncap', "#{$vb_cpuexecutioncap}"]
-        vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
-        vb.customize ['modifyvm', :id, '--ioapic', 'on']
+      master.vm.box = atomicBoxImage
+      master.vm.hostname = "master#{n}"
+      master.vm.synced_folder ".", "/vagrant", disabled: true
+      master.vm.network "public_network", auto_config: false
+      master.vm.network "private_network", ip: "192.168.56.#{n+10}"
+      master.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--memory", 2048]
+        v.customize ["modifyvm", :id, "--name", "master#{n}"]
+        # On VirtualBox, we don't have guest additions or a functional vboxsf
+        # in CoreOS, so tell Vagrant that so it can be smarter.
+        v.check_guest_additions = false
+        v.functional_vboxsf     = false
       end
+
       # centos hack to get the private_network going
       #master.vm.provision "shell", run: "always", inline: "ifup enp0s8"
-      atomic.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
-      atomic.vm.provision "file", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
-      atomic.vm.provision "shell", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
+      master.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
+      master.vm.provision "file", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
+      master.vm.provision "shell", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
     end
   end
+
+
+  (1..3).each do |n|
+    config.vm.define "minion#{n}" do |minion|
+      # plugin not supported by centos/atomic-host
+      #if Vagrant.has_plugin?("vagrant-vbguest") then
+      #  config.vbguest.auto_update = false
+      #end
+      minion.vm.box = atomicBoxImage
+      minion.vm.hostname = "minion#{n}"
+      minion.vm.synced_folder ".", "/vagrant", disabled: true
+
+      minion.vm.network "private_network", ip: "192.168.56.#{n+20}"
+      minion.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--memory", 2048]
+        v.customize ["modifyvm", :id, "--name", "minion#{n}"]
+        # On VirtualBox, we don't have guest additions or a functional vboxsf
+        # in CoreOS, so tell Vagrant that so it can be smarter.
+        v.check_guest_additions = false
+        v.functional_vboxsf     = false
+      end
+
+      # centos hack to get the private_network going
+      #minion.vm.provision "shell", run: "always", inline: "ifup enp0s8"
+      minion.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
+      minion.vm.provision "file", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
+      minion.vm.provision "shell", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
+    end
+  end
+
+
 end
