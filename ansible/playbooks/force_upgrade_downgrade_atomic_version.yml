@@ -13,7 +13,7 @@
     # Force upgrade/dowgrade atomic to a specific version.
     - name: upgrade/downgrade the atomic os to a specific version (atomic host upgrade) that supports infiniband
       # Current versions - 7.20161006 7.20170209 - replace on the line to suit your needs.
-      shell: sleep 2 && atomic host deploy 7.20161006 # downgrade to the specified version
+      shell: sleep 2 && atomic host rollback 7.20161006 # upgrade\downgrade to the specified version
       register: atomicout
       become: true
       ignore_errors: true
