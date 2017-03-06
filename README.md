@@ -96,6 +96,14 @@ But if you rerun 'vagrant up' a second time on all the atomic boxes, it will ini
 vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2) && (vagrant up atomic3 || vagrant up atomic3) && (vagrant up atomic4 || vagrant up atomic4)
 ```
 
+Be shure to activate the hos-only adapters on the atomic hosts before running any other playbooks above. If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
+That can be fixed as by running this command:
+```bash
+user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
+$ vagrant ssh control
+[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
+```
+
 ##ssh pki authentication 
 An example showing how the _boxes_ can be accessed directly without authentication because _contol_ box public key is
 included in `.ssh/authorized_keys` on all the other _boxes_.
@@ -158,14 +166,6 @@ Last login: Wed Feb 15 13:19:37 2017 from 10.0.2.2
 [vagrant@control ~]$ ls /vagrant/
 ansible  ansible.pub  README.md  Vagrantfile
 [vagrant@control ~]$
-```
-
-Be shure to activate the hos-only adapters on the atomic hosts before running the playbook above, because it reboots the machines. If this other playbook hasn’t been played the host-only adapters won’t auto start.
-That can be fixed as by running this command:
-```bash
-user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
-$ vagrant ssh control
-[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
 ```
 
 ###atomic boxes
