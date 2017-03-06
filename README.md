@@ -60,7 +60,7 @@ Created using: http://asciiflow.com/
 ##Getting started
 The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
 
-Calling vagrant up will cause this error on all the atomic nodes.
+Calling vagrant up will cause this error on all the atomic boxes.
 
 ```bash
 ==> atomic1: Configuring and enabling network interfaces...
@@ -91,7 +91,7 @@ usage: ifdown <configuration>
 Job for network.service failed because the control process exited with error code. See "systemctl status network.service" and "journalctl -xe" for details.
 ```
 
-But if you rerun 'vagrant up' a second time on all the atomic nodes, it will initialize correctly. So to start this ignoring the errors as a one-liner use this command:    
+But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly. So to start this ignoring the errors as a one-liner use this command:    
 ```bash
 vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2) && (vagrant up atomic3 || vagrant up atomic3) && (vagrant up atomic4 || vagrant up atomic4)
 ```
@@ -160,8 +160,15 @@ ansible  ansible.pub  README.md  Vagrantfile
 [vagrant@control ~]$
 ```
 
+Be shure to activate the hos-only adapters on the atomic hosts before running the playbook above, because it reboots the machines. If this other playbook hasn’t been played the host-only adapters won’t auto start.
+That can be fixed as by running this command:
+```bash
+user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
+$ vagrant ssh control
+[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
+```
 
-###Master and minion boxes
+###atomic boxes
 *[atomic](http://www.projectatomic.io/)
 
 Atomic is "immutable infrastructure to deploy and scale your containerized applications. Project Atomic provides the
@@ -192,7 +199,7 @@ To configure ansible to know the topology the /etc/ansible/hosts should contain 
 master1
 
 [minions]
-minion[1:3]
+minion[1:4]
 ```
 
 To test the setup you should be able to execute the following command with success:
