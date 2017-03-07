@@ -151,7 +151,7 @@ sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
 [nodes]
-atomic[1:4]
+atomic[0:3]
 
 ANSIBLEHOSTSEOF
 
@@ -162,7 +162,7 @@ RUBY_HERE_DOCUMENT1
   config.vm.provision "shell", inline: "echo 'Hello from All'"
 
 
-  (1..4).each do |n|
+  (0..3).each do |n|
     config.vm.define "atomic#{n}" do |atomic|
       atomic.vm.provision "shell", inline: "echo 'Hello from Atomic'"
       # plugin conflict
