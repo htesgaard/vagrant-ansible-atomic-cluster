@@ -1,0 +1,52 @@
+---
+- hosts: master
+  become: true
+  become_user: root
+  tasks:
+    - name: Deploying a docker registry server
+      command: "docker create -p 5000:5000 -v /var/lib/local-registry:/var/lib/registry -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io --name=local-registry registry:2"
+      register: docker
+    - debug: var=docker.stdout_lines
+
+    - name: Create local registry
+      command: "mkdir -p /var/lib/local-registry"
+      register: reg
+    - debug: var=reg.stdout_lines
+
+    - name: Change SELinux security context
+      command: "chcon -Rvt svirt_sandbox_file_t /var/lib/local-registry"
+      register: selinux
+    - debug: var=selinux.stdout_lines
+
+    - name: Register the local docker registry as a service
+      copy:
+        src: /vagrant/ansible/playbooks/resource/local-registry.service
+        dest: /etc/systemd/system/local-registry.service
+        owner: root
+        group: root
+        #mode: 0644
+
+    - name: Reaload systemd configuration
+      command: "systemctl daemon-reload"
+      register: systemctl
+
+    - name: Enable the local docker registry service
+      command: "systemctl enable local-registry"
+      register: systemctl
+
+    - name: Start the local docker registry service
+      command: "systemctl start local-registry"
+      register: systemctl
+
+    - debug: var=systemctl.stdout_lines
+
+    - name: test Docker Registry
+      uri:
+        url: http://localhost:5000/v2/
+        status_code: 200
+        return_content: yes
+      register: test_docker_registry
+      until: test_docker_registry.content == '{}'
+      retries: 5
+      delay: 2
+      ignore_errors: yes
