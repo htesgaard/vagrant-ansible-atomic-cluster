@@ -1,0 +1,73 @@
+---
+- hosts: master
+  become: true
+  become_user: root
+  tasks:
+    - name: Configure KUBE_ETCD_SERVERS
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_ETCD_SERVERS='
+        line: 'KUBE_ETCD_SERVERS="--etcd_servers=http://192.168.122.10:2379"'
+
+    - name: Configure KUBE_MASTER
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_MASTER='
+        line: 'KUBE_MASTER="--master=http://192.168.122.10:443"'
+
+    - name: Configure KUBE_API_ADDRESS
+      lineinfile:
+        dest: "/etc/kubernetes/apiserver"
+        regexp: '^KUBE_API_ADDRESS='
+        line: 'KUBE_API_ADDRESS="--address=0.0.0.0"'
+
+#    # If you need to modify the set of IPs that Kubernetes assigns to services,
+#    # change the KUBE_SERVICE_ADDRESSES value. Since this guide is using the 192.168.122.0/24
+#    # and 172.16.0.0/12 networks, we can leave the default. This address space needs to be unused elsewhere,
+#    # but doesn’t need to be reachable from either of the other networks.
+#    #
+#    # Address range to use for services
+#    - name: Configure KUBE_SERVICE_ADDRESSES
+#      lineinfile:
+#        dest: "/etc/kubernetes/apiserver"
+#        regexp: '^KUBE_SERVICE_ADDRESSES='
+#        line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.254.0.0/16"'
+
+    # We’ll also add parameters for the certificates we generated earlier.
+    # Add your own certs!
+    - name: Configure KUBE_API_ADDRESS
+      lineinfile:
+        dest: "/etc/kubernetes/apiserver"
+        regexp: '^KUBE_API_ARGS='
+        line: 'KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --service-account-key-file=/etc/kubernetes/certs/server.crt"'
+
+    - name: Configure KUBE_API_ADDRESS
+      lineinfile:
+        dest: "/etc/kubernetes/controller-manager"
+        regexp: '^KUBE_CONTROLLER_MANAGER_ARGS='
+        line: 'KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file=/etc/kubernetes/certs/server.key --root-ca-file=/etc/kubernetes/certs/ca.crt"'
+
+    - name: Enable and start etcd
+      systemd:
+        name: etcd
+        enabled: yes
+        state: started
+
+    - name: Enable and start kube-apiserver
+      systemd:
+        name: kube-apiserver
+        enabled: yes
+        state: started
+
+    - name: Enable and start kube-controller-manager
+      systemd:
+        name: kube-controller-manager
+        enabled: yes
+        state: started
+
+    - name: Enable and start kube-scheduler
+      systemd:
+        name: kube-scheduler
+        enabled: yes
+        state: started
+

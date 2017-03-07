@@ -1,7 +1,7 @@
 ---
 - hosts: master
   become: false
-  #become_user: root
+  # TODO make this file idempotent
   tasks:
     - name: Show username running the deploy
       local_action: command whoami
@@ -15,23 +15,26 @@
       command: "tar xzf easy-rsa.tar.gz"
 
     - name: Download easy-rsa
-      command: "cd ~/easy-rsa-master/easyrsa3 && ./easyrsa init-pki"
+      shell: "cd ~/easy-rsa-master/easyrsa3 && ./easyrsa init-pki"
 
     - name: Download easy-rsa
-      command: 'cd ~/easy-rsa-master/easyrsa3 && ./easyrsa --batch "--req-cn=`hostname`@`date +%s`" build-ca nopass'
+      shell: 'cd ~/easy-rsa-master/easyrsa3 && ./easyrsa --batch "--req-cn=`hostname`@`date +%s`" build-ca nopass'
 
     # TODO fix hardcoded IP-address
     - name: Download easy-rsa
-      command: 'cd ~/easy-rsa-master/easyrsa3 && ./easyrsa --subject-alt-name="192.168.56.10" build-server-full server nopass'
+      shell: 'cd ~/easy-rsa-master/easyrsa3 && ./easyrsa --subject-alt-name="IP:192.168.56.10" build-server-full server nopass'
 
     - name: Create cert folder
-      command: 'sudo mkdir /etc/kubernetes/certs'
+      file:
+        path: /etc/kubernetes/certs
+      become: true
 
     - name: Copy certificates
-      command: 'cd ~/easy-rsa-master/easyrsa3 && for i in {pki/ca.crt,pki/issued/server.crt,pki/private/server.key}; do sudo cp $i /etc/kubernetes/certs; done'
+      shell: 'cd ~/easy-rsa-master/easyrsa3 && for i in {pki/ca.crt,pki/issued/server.crt,pki/private/server.key}; do sudo cp $i /etc/kubernetes/certs; done'
 
     - name: Change owner of the cert folder
       command: 'sudo chown -R kube:kube /etc/kubernetes/certs'
+
 
 
 
