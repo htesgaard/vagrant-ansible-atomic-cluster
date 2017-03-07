@@ -150,6 +150,10 @@ sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 #   - Groups of hosts are delimited by [header] elements
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
+
+[master]
+atomic[0:0]
+
 [nodes]
 atomic[0:3]
 
