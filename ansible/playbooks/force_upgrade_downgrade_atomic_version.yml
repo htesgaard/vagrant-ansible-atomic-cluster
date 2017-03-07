@@ -12,6 +12,13 @@
 
     - name: deploy a specific version that supports infiniband
       # Current versions - 7.20161006 7.20170209 - replace on the line to suit your needs.
+      shell: atomic host deploy 7.20161006
+      #register: atomicout
+      become: true
+      ignore_errors: yes
+
+    - name: deploy a specific version that supports infiniband
+      # Current versions - 7.20161006 7.20170209 - replace on the line to suit your needs.
       shell: sleep 2 && atomic host deploy 7.20161006 -r
       #register: atomicout
       become: true
