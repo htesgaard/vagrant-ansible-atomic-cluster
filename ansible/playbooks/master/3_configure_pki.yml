@@ -1,0 +1,41 @@
+---
+- hosts: master
+  become: false
+  #become_user: root
+  tasks:
+    - name: Show username running the deploy
+      local_action: command whoami
+      register: username_on_the_host
+    - debug: var=username_on_the_host
+
+    - name: Download easy-rsa
+      command: "curl -L -O https://storage.googleapis.com/kubernetes-release/easy-rsa/easy-rsa.tar.gz"
+
+    - name: Extract easy-rsa
+      command: "tar xzf easy-rsa.tar.gz"
+
+    - name: Download easy-rsa
+      command: "cd ~/easy-rsa-master/easyrsa3 && ./easyrsa init-pki"
+
+    - name: Download easy-rsa
+      command: 'cd ~/easy-rsa-master/easyrsa3 && ./easyrsa --batch "--req-cn=`hostname`@`date +%s`" build-ca nopass'
+
+    # TODO fix hardcoded IP-address
+    - name: Download easy-rsa
+      command: 'cd ~/easy-rsa-master/easyrsa3 && ./easyrsa --subject-alt-name="192.168.56.10" build-server-full server nopass'
+
+    - name: Create cert folder
+      command: 'sudo mkdir /etc/kubernetes/certs'
+
+    - name: Copy certificates
+      command: 'cd ~/easy-rsa-master/easyrsa3 && for i in {pki/ca.crt,pki/issued/server.crt,pki/private/server.key}; do sudo cp $i /etc/kubernetes/certs; done'
+
+    - name: Change owner of the cert folder
+      command: 'sudo chown -R kube:kube /etc/kubernetes/certs'
+
+
+
+
+
+
+
