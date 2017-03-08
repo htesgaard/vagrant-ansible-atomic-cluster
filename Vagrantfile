@@ -151,11 +151,11 @@ sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
 
-[master]
+[kubernetes-masters]
 atomic[0:0]
 
-[nodes]
-atomic[0:3]
+[kubernetes-kubelets]
+atomic[1:3]
 
 ANSIBLEHOSTSEOF
 
