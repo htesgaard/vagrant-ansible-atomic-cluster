@@ -40,15 +40,13 @@
         regexp: '^KUBE_MASTER='
         line: 'KUBE_MASTER="--master=http://192.168.56.10:8080"'
 
-    - name: Reload daemon configuration
+    - name: Reaload systemd configuration
       command: "systemctl daemon-reload"
       register: systemctl
-    - debug: var=systemctl.stdout_lines
 
     - name: Enable services flanneld kubelet kube-proxy
       command: "systemctl enable flanneld kubelet kube-proxy"
       register: systemctl
-    - debug: var=systemctl.stdout_lines
 
 #    - name: Enable and start flanneld
 #      systemd:

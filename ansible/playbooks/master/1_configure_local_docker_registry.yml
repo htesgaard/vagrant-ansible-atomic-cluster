@@ -5,6 +5,7 @@
   tasks:
     - name: Deploying a docker registry server
       command: "docker create -p 5000:5000 -v /var/lib/local-registry:/var/lib/registry -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io --name=local-registry registry:2"
+      # to remove use:  sudo docker stop local-registry && sudo docker rm -v local-registry
       register: docker
     - debug: var=docker.stdout_lines
 
