@@ -3,6 +3,11 @@
   become: true
   become_user: root
   tasks:
+    - name: Ensure that docker daemon is running
+      service:
+        name: docker.service
+        state: started
+
     - name: Deploying a docker registry server
       command: "docker create -p 5000:5000 -v /var/lib/local-registry:/var/lib/registry -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io --name=local-registry registry:2"
       # to remove use:  sudo docker stop local-registry && sudo docker rm -v local-registry
@@ -51,3 +56,8 @@
       retries: 5
       delay: 2
       ignore_errors: yes
+
+    - name: Ensure that docker daemon is running after messing
+        service:
+          name: docker.service
+          state: started
