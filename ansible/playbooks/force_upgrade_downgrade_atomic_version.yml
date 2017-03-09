@@ -10,7 +10,7 @@
     - name: get version output
       debug: var=cat.stdout_lines
 
-    - name: deploy a specific version that supports infiniband
+    - name: deploy a specific version that supports infiniband (initially slow, it downloads the old version )
       # Current versions - 7.20161006 7.20170209 - replace on the line to suit your needs.
       shell: atomic host deploy 7.20161006
       #register: atomicout

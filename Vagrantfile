@@ -189,8 +189,8 @@ RUBY_HERE_DOCUMENT1
       # centos hack to get the private_network going
       #master.vm.provision "shell", run: "always", inline: "ifup enp0s8"
       atomic.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
-      atomic.vm.provision "file", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
-      atomic.vm.provision "shell", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
+      atomic.vm.provision "file", run: "always", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
+      atomic.vm.provision "shell", run: "always", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
     end
   end
 end

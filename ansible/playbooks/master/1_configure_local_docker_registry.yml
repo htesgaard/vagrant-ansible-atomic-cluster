@@ -58,6 +58,13 @@
       ignore_errors: yes
 
     - name: Ensure that docker daemon is running after messing
-        service:
-          name: docker.service
-          state: started
+      service:
+        name: docker.service
+        state: started
+
+    - name: Ensure that the 'new' local-registry daemon is running
+      service:
+        name: local-registry
+        state: started
+
+
