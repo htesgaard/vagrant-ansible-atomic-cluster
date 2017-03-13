@@ -16,7 +16,7 @@
             'Type': 'vxlan'
              }
           }
-        status_code: 200
+        status_code: 200, 201 # 201 is returned when created. Otherwise 200 is returned.
         return_content: yes
         HEADER_Content-Type: "application/x-www-form-urlencoded"
         body_format: json
