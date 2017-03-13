@@ -1,7 +1,7 @@
 ---
 - hosts: kubernetes-masters
   become: true
-  strategy: debug
+#  strategy: debug
   gather_facts: yes
   # TODO make this file idempotent
   tasks:
@@ -57,19 +57,23 @@
         path: /etc/kubernetes/certs/private
         state: directory
 
-    - name: Copy PKI files to Kubernetes cert folder
+    - name: Copy ca.crt to kuubernetes cert folder
       copy:
+        remote_src: true #copy from the target machine
         src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/ca.crt
         dest: /etc/kubernetes/certs/ca.crt
-      #copy:
-      #  src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/issued/server.crt
-      #  dest: /etc/kubernetes/certs/issued/server.crt
-      #  directory_mode: true
 
-      #copy:
-      #  src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/private/server.key
-      #  dest: /etc/kubernetes/certs/private/server.key
+    - name: Copy issued/server.crt to kuubernetes cert folder
+      copy:
+        remote_src: true #copy from the target machine
+        src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/issued/server.crt
+        dest: /etc/kubernetes/certs/issued/server.crt
 
+    - name: Copy private/server.key to kuubernetes cert folder
+      copy:
+        remote_src: true #copy from the target machine
+        src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/private/server.key
+        dest: /etc/kubernetes/certs/private/server.key
 
     - name: Change owner of the cert folder and files
       file:
