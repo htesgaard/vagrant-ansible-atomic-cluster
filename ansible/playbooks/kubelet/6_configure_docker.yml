@@ -26,6 +26,13 @@
         regexp: '^FLANNEL_ETCD_ENDPOINTS='
         line: 'FLANNEL_ETCD_ENDPOINTS="http://192.168.56.10:2379"'
 
+    # TODO fix hardcoded ip
+    - name: Configuring Docker to use the Flannel overlay 1
+      lineinfile:
+        dest: "/etc/sysconfig/flanneld"
+        regexp: '^FLANNEL_ETCD='
+        line: 'FLANNEL_ETCD="http://192.168.56.10:2379"'
+
     - name: Configuring Docker to use the Flannel overlay 2
       lineinfile:
         dest: "/etc/sysconfig/flanneld"
