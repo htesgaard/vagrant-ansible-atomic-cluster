@@ -1,0 +1,17 @@
+
+[all:vars]
+master_ip=192.168.56.10
+etcd_server=192.168.56.10
+kubernetes_nic_name=enp0s8
+kubernetes_host_ip={{ ansible_enp0s8.ipv4.address }}
+etcd_prefix=/atomic.io/network
+user_to_configure_kubectl_for=vagrant
+
+
+
+[kubernetes-masters]
+atomic[0:0]
+
+[kubernetes-kubelets]
+atomic[1:3]
+
