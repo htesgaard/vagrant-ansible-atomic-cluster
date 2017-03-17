@@ -1,0 +1,21 @@
+---
+- hosts: kubernetes-masters
+  become_user: "{{ user_to_configure_kubectl_for }}"
+  tasks:
+    - name: Configure kubectl 1
+      command: "kubectl config set-cluster mycluster --certificate-authority=/etc/kubernetes/certs/ca.crt"
+
+    - name: Configure kubectl 2
+      command: "kubectl config set-credentials mycluster --certificate-authority=/etc/kubernetes/certs/ca.crt --client-key=/etc/kubernetes/certs/server.key --client-certificate=/etc/kubernetes/certs/server.crt"
+
+    - name: Configure kubectl 3
+      command: "kubectl config set-cluster default-cluster --server=http://{{ master_ip }}:8080"
+
+    - name: Configure kubectl 3
+      command: "kubectl config set-context default-context --cluster=default-cluster --user=default-admin"
+
+    - name: Configure kubectl 4
+      command: "kubectl config use-context default-context"
+
+
+

@@ -1,0 +1,42 @@
+---
+- hosts: kubernetes-kubelets
+  become: true
+  tasks:
+    # TODO test this
+    - name: Configure KUBELET_ADDRESS
+      lineinfile:
+        dest: "/etc/kubernetes/kubelet"
+        regexp: '^KUBELET_ADDRESS='
+        line: 'KUBELET_ADDRESS="--address={{ kubernetes_host_ip }}"'
+
+    - name: Configure KUBELET_HOSTNAME
+      lineinfile:
+        dest: "/etc/kubernetes/kubelet"
+        regexp: '^KUBELET_HOSTNAME='
+        line: 'KUBELET_HOSTNAME="--hostname_override={{ kubernetes_host_ip }}"'
+
+    - name: Configure location of the api-server
+      lineinfile:
+        dest: "/etc/kubernetes/kubelet"
+        regexp: '^KUBELET_API_SERVER='
+        line: 'KUBELET_API_SERVER="--api_servers=http://{{ master_ip }}:8080"'
+
+    - name: Configure location of the etcd server
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_MASTER='
+        line: 'KUBE_MASTER="--master=http://{{ master_ip }}:8080"'
+
+    - name: Reload kubelet
+      systemd:
+        name: kubelet
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
+    - name: Reload kube-proxy
+      systemd:
+        name: kube-proxy
+        enabled: yes
+        state: restarted
+        daemon_reload: yes

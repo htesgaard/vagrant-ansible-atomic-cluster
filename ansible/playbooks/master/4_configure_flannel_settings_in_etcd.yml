@@ -1,12 +1,13 @@
 ---
+# This playbook only adds the flannel configuration to the etcd server
 - hosts: kubernetes-masters
   become: true
   become_user: root
   tasks:
     - name: Configure flannel
       uri:
-        #url: "{{ etcd_server }}/v2/keys/atomic.io/network/config"
-        url: "http://localhost:2379/v2/keys/atomic.io/network/config"
+        #url: "{{ etcd_server }}/v2/keys{{ etcd_prefix }}/config"
+        url: "http://{{ etcd_server }}:2379/v2/keys{{ etcd_prefix }}/config"
         method: PUT
         body: |-
           value={ "Network": "172.16.0.0/12", "SubnetLen": 24, "Backend": { "Type": "vxlan"} }
@@ -17,7 +18,7 @@
 
     - name: Test the change
       uri:
-        url: "http://localhost:2379/v2/keys/atomic.io/network/config"
+        url: "http://{{ etcd_server }}:2379/v2/keys{{ etcd_prefix }}/config"
         status_code: 200
         return_content: yes
       register: test_flannel

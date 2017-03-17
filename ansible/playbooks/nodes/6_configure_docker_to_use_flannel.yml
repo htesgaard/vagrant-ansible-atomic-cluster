@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: ip link del docker0
+      command: 'ip link del docker0'
+
+#    - name: rm -fr /var/lib/docker/network/*
+#      command: 'rm -fr /var/lib/docker/network/*'
+
+    - name: Delete old docker network config files
+      file:
+        state: absent
+        path: "/var/lib/docker/network/"
+
+    - name: Reload docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: restarted
+        daemon_reload: yes

@@ -3,25 +3,30 @@
   become: true
   become_user: root
   tasks:
-    # TODO hardcoded IP
     - name: Configure KUBE_ETCD_SERVERS
       lineinfile:
         dest: "/etc/kubernetes/config"
         regexp: '^KUBE_ETCD_SERVERS='
-        line: 'KUBE_ETCD_SERVERS="--etcd_servers=http://192.168.56.10:2379"'
+        line: 'KUBE_ETCD_SERVERS="--etcd_servers=http://{{ master_ip }}:2379"'
 
-    # TODO hardcoded IP
+    # TODO (somehow this tasks dosen't seams to be executed)
     - name: Configure KUBE_MASTER
       lineinfile:
         dest: "/etc/kubernetes/config"
         regexp: '^KUBE_MASTER='
-        line: 'KUBE_MASTER="--master=http://192.168.56.10:443"'
+        line: 'KUBE_MASTER="--master=http://{{ master_ip }}:8080"'
 
     - name: Configure KUBE_API_ADDRESS
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_API_ADDRESS='
         line: 'KUBE_API_ADDRESS="--address=0.0.0.0"'
+
+    - name: Configure KUBE_API_PORT
+      lineinfile:
+        dest: "/etc/kubernetes/apiserver"
+        regexp: '^KUBE_API_PORT='
+        line: 'KUBE_API_PORT="--secure-port=6443 --insecure-port=8080"'
 
 #    # If you need to modify the set of IPs that Kubernetes assigns to services,
 #    # change the KUBE_SERVICE_ADDRESSES value. Since this guide is using the 192.168.122.0/24
@@ -37,39 +42,38 @@
 
     # We’ll also add parameters for the certificates we generated earlier.
     # Add your own certs!
-    - name: Configure KUBE_API_ADDRESS
+    - name: Configure KUBE_API_ARGS
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_API_ARGS='
         line: 'KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --service-account-key-file=/etc/kubernetes/certs/server.crt"'
 
-    - name: Configure KUBE_API_ADDRESS
+    - name: Configure KUBE_CONTROLLER_MANAGER_ARGS
       lineinfile:
         dest: "/etc/kubernetes/controller-manager"
         regexp: '^KUBE_CONTROLLER_MANAGER_ARGS='
         line: 'KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file=/etc/kubernetes/certs/server.key --root-ca-file=/etc/kubernetes/certs/ca.crt"'
 
-    - name: Enable and start etcd
-      systemd:
-        name: etcd
-        enabled: yes
-        state: started
 
+    # sudo systemctl restart kube-apiserver
     - name: Enable and start kube-apiserver
       systemd:
         name: kube-apiserver
         enabled: yes
-        state: started
+        state: restarted
+        daemon_reload: yes
 
     - name: Enable and start kube-controller-manager
       systemd:
         name: kube-controller-manager
         enabled: yes
-        state: started
+        state: restarted
+        daemon_reload: yes
 
     - name: Enable and start kube-scheduler
       systemd:
         name: kube-scheduler
         enabled: yes
         state: started
+        daemon_reload: yes
 

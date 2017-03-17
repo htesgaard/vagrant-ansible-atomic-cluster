@@ -36,9 +36,8 @@
       args:
         chdir: /tmp/ansible/easy-rsa-master/easyrsa3
 
-    # TODO fix hardcoded IP-address
     - name: Generate cert 2
-      command: './easyrsa --subject-alt-name="IP:192.168.56.10" build-server-full server nopass'
+      command: './easyrsa --subject-alt-name="IP:{{ master_ip }}" build-server-full server nopass'
       args:
         chdir: /tmp/ansible/easy-rsa-master/easyrsa3
 

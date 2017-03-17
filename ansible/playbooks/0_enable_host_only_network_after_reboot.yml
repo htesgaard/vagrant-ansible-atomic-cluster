@@ -7,6 +7,7 @@
       ping:
     - name: ensure that the host-only network starts while running on virtualbox
       lineinfile:
-        dest: /etc/sysconfig/network-scripts/ifcfg-enp0s8
+        #dest: /etc/sysconfig/network-scripts/ifcfg-enp0s8
+        dest: /etc/sysconfig/network-scripts/ifcfg-{{ kubernetes_nic_name }}
         regexp: '^NM_CONTROLLED='
         line: 'NM_CONTROLLED=yes'

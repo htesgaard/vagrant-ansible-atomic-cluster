@@ -1,7 +1,6 @@
 ---
 - hosts: kubernetes-masters
   become: true
-  become_user: root
   tasks:
     - name: Ensure that docker daemon is running
       service:
@@ -48,7 +47,7 @@
 
     - name: test Docker Registry
       uri:
-        url: http://localhost:5000/v2/
+        url: http://{{ master_ip }}:5000/v2/
         status_code: 200
         return_content: yes
       register: test_docker_registry

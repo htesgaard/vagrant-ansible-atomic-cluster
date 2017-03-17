@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - debug: var=ansible_default_ipv4.address
+
+    - name: Verify Ansible version.
+      assert:
+        that: "ansible_version.full | version_compare('2.3', '<')"
+        msg: >
+          "To use the playbook on Ansible >= 2.3, you must change the 'lineinfile' property 'dest' to path "
+
+#### Initially ignore registry mirror
+#    - name: Configuring Docker to use the cluster registry cache
+#      lineinfile:
+#        dest: "/etc/sysconfig/docker"
+#        regexp: '^OPTIONS='
+#        #line: "OPTIONS='--registry-mirror=http://{{ master_ip }}:5000 --selinux-enabled --log-driver=journald'"
+#        line: "OPTIONS='--registry-mirror=http://{{ master_ip }}:5000 --log-driver=journald'"
+
+
+
+
