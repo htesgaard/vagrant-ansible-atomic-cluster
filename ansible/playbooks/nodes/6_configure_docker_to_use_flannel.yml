@@ -4,6 +4,18 @@
   tasks:
     - name: ip link del docker0
       command: 'ip link del docker0'
+      ignore_errors: yes
+
+    - name: Change default options
+      # Somehoew this https://github.com/coreos/flannel#docker-integration is not nessesary. The flannel configuration
+      # is picked up by docker
+      lineinfile:
+        dest: "/etc/sysconfig/docker"
+        regexp: '^OPTIONS='
+        #line: "OPTIONS='--log-driver=journald --bip 172.29.0.1/16'"
+        #line: "OPTIONS='--log-driver=journald --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}'"
+        line: "OPTIONS='--log-driver=journald'"
+
 
 #    - name: rm -fr /var/lib/docker/network/*
 #      command: 'rm -fr /var/lib/docker/network/*'
@@ -12,6 +24,7 @@
       file:
         state: absent
         path: "/var/lib/docker/network/"
+
 
     - name: Reload docker
       systemd:

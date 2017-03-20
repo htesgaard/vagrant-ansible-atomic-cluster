@@ -2,10 +2,24 @@
 - hosts: kubernetes-masters
   become: true
   tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - debug: var=ansible_default_ipv4.address
+
+    - name: Verify Ansible version.
+      assert:
+        that: "ansible_version.full | version_compare('2.3', '<')"
+        msg: >
+          "To use the playbook on Ansible >= 2.3, you must change the 'lineinfile' property 'dest' to path "
+
     - name: Ensure that docker daemon is running
       service:
         name: docker.service
         state: started
+
+    - name: Create local registry storage folder /var/lib/local-registry
+      file: path=/var/lib/local-registry state=directory
+      register: reg
+    - debug: var=reg.stdout_lines
 
     - name: Deploying a docker registry server
       command: "docker create -p 5000:5000 -v /var/lib/local-registry:/var/lib/registry -e REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/var/lib/registry -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io --name=local-registry registry:2"
@@ -13,37 +27,26 @@
       register: docker
     - debug: var=docker.stdout_lines
 
-    - name: Create local registry
-      command: "mkdir -p /var/lib/local-registry"
-      register: reg
-    - debug: var=reg.stdout_lines
 
-    - name: Change SELinux security context
-      command: "chcon -Rvt svirt_sandbox_file_t /var/lib/local-registry"
-      register: selinux
-    - debug: var=selinux.stdout_lines
+
+#    - name: Change SELinux security context
+#      command: "chcon -Rvt svirt_sandbox_file_t /var/lib/local-registry"
+#      register: selinux
+#    - debug: var=selinux.stdout_lines
 
     - name: Register the local docker registry as a service
       copy:
-        src: /vagrant/ansible/playbooks/resource/local-registry.service
+        src: ./resources/local-registry.service
         dest: /etc/systemd/system/local-registry.service
         owner: root
         group: root
         #mode: 0644
 
     - name: Reaload systemd configuration
-      command: "systemctl daemon-reload"
-      register: systemctl
-
-    - name: Enable the local docker registry service
-      command: "systemctl enable local-registry"
-      register: systemctl
-
-    - name: Start the local docker registry service
-      command: "systemctl start local-registry"
-      register: systemctl
-
-    - debug: var=systemctl.stdout_lines
+      systemd:
+        name: local-registry
+        enabled: yes
+        state: reloaded
 
     - name: test Docker Registry
       uri:
@@ -56,14 +59,23 @@
       delay: 2
       ignore_errors: yes
 
-    - name: Ensure that docker daemon is running after messing
-      service:
-        name: docker.service
-        state: started
-
     - name: Ensure that the 'new' local-registry daemon is running
       service:
         name: local-registry
         state: started
+
+    #### Initially ignore registry mirror
+    - name: Configuring Docker to use the cluster registry cache
+      lineinfile:
+        dest: "/etc/sysconfig/docker"
+        regexp: '^OPTIONS='
+        line: "OPTIONS='--registry-mirror=http://{{ master_ip }}:5000 --log-driver=journald'"
+
+    - name: Reload docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
 
 
