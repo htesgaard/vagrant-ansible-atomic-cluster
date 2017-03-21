@@ -17,5 +17,3 @@
     - name: Configure kubectl 4
       command: "kubectl config use-context default-context"
 
-
-

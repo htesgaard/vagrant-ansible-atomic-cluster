@@ -7,6 +7,9 @@ kubernetes_host_ip={{ ansible_enp0s8.ipv4.address }}
 etcd_prefix=/atomic.io/network
 user_to_configure_kubectl_for=vagrant
 
+[ansible-controller]
+control connection=local
+
 [kubernetes-masters]
 atomic[1:1]
 

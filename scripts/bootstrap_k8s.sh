@@ -22,3 +22,23 @@ ansible-playbook 0_enable_host_only_network_after_reboot.yml -i VAGRANT_INVENTOR
 ansible-playbook 0_force_upgrade_downgrade_atomic_version.yml -i VAGRANT_INVENTORY
 cd /vagrant/ansible/playbooks/k8s-install/
 for i in *.yml; do ansible-playbook "$i" -i ../VAGRANT_INVENTORY; done
+
+
+
+
+# Linux
+cd ~
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+sudo mkdir -p /etc/kubernetes/certs/
+sudo scp -r vagrant@atomic1:/etc/kubernetes/certs /etc/kubernetes/
+mkdir ~/.kube
+scp -r vagrant@atomic1:~/.kube ~/
+
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+. ~/.bashrc
+
+# show node pod capacity
+sudo yum install jq
+kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, capacity: .status.capacity}'
