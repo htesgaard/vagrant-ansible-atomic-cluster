@@ -254,7 +254,7 @@ When that is done, reset the atomic _boxes_ using the command ´vagrant destroy 
   
 ## Playbooks
 
-Ensure atomic version 
+Downgrade atomic and install Kubernetes
 ```bash
 $ vagrant ssh control
 [vagrant@control ~]$ cd /vagrant/ansible/playbooks/
@@ -262,6 +262,8 @@ $ vagrant ssh control
 ...
 [vagrant@control playbooks]$ ansible-playbook 0_force_upgrade_downgrade_atomic_version.yml -i VAGRANT_INVENTORY
 ...
+cd k8s-install/
+for i in *.yml; do ansible-playbook "$i" -i ../VAGRANT_INVENTORY; done
 ```
   
 ## Vagrant tips
