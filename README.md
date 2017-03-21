@@ -1,17 +1,17 @@
 # vagrant-ansible-atomic-cluster
 A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 
-#Prerequisites
+# Prerequisites
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://www.vagrantup.com/docs/installation/)
 
-###Vagrant modules
+### Vagrant modules
 ```bash
 $ vagrant plugin install vagrant-vbguest && vagrant plugin install vagrant-hostmanager
 ```
 
 
-##A note on vagrant/virtualbox networking
+## A note on vagrant/virtualbox networking
 All _boxes_ are configured with two NIC's one [NAT](https://www.virtualbox.org/manual/ch06.html#network_nat) and one [Host-Only](https://www.virtualbox.org/manual/ch06.html#network_hostonly).
 This is common usage in [mulit-machine](https://www.vagrantup.com/docs/multi-machine/) vagrant setups.
 
@@ -24,7 +24,7 @@ In that way we build a multi-machine setup that acts like real machines.
 Hostfiles are automatically configured, so any host can ping the other hosts by their names. The vagrant plugin
 'vagrant-hostmanager' takes care of that. 
 
-##Topology
+## Topology
 
 ```bash
 +-------------------------------------------------------------------------------+
@@ -49,9 +49,9 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 Created using: http://asciiflow.com/
 ```
 
-##Usage
+## Usage
 
-##Getting started
+## Getting started
 The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
 
 Calling vagrant up will cause this error on all the atomic boxes.
@@ -98,7 +98,7 @@ $ vagrant ssh control
 [vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
 ```
 
-##ssh pki authentication 
+## ssh pki authentication 
 An example showing how the _boxes_ can be accessed directly without authentication because _contol_ box public key is
 included in `.ssh/authorized_keys` on all the other _boxes_.
 
@@ -138,9 +138,9 @@ logout
 Connection to 127.0.0.1 closed.
 ```
 
-##  Atomic and Centos
+## Atomic and Centos
 The os-distros used in this setup is
-###Control _box
+### Control _box
 *[centos7](https://www.centos.org/download/)
 
 #### control box shared folder 
@@ -210,7 +210,7 @@ atomic2 | SUCCESS => {
 
 ```
 
-#Errors
+# Errors
 
 If you get this error try running `vagrant up` again
 ```bash
@@ -230,7 +230,7 @@ The error output from the command was:
 mount: unknown filesystem type 'vboxsf'
 ```
 
-##Check if docker is running
+## Check if docker is running
 
 The command `sudo systemctl status docker.service` should show that the docker daemon is running.
 If not, check the systemd logs using the coimmand `sudo journalctl -u docker`.
@@ -239,7 +239,7 @@ If not, check the systemd logs using the coimmand `sudo journalctl -u docker`.
  
  
 
-#Exercise
+# Exercise
 The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
 
 ## Configure Kubernetes
@@ -268,12 +268,12 @@ for i in *.yml; do ansible-playbook "$i" -i ../VAGRANT_INVENTORY; done
   
 ## Vagrant tips
 
-###Pausing and resuming
+### Pausing and resuming
 ```bash
 vagrant suspend && vagrant resume
 ``` 
 
-###Stopping and starting
+### Stopping and starting
 ```bash
 vagrant halt && vagrant up 
 ```
