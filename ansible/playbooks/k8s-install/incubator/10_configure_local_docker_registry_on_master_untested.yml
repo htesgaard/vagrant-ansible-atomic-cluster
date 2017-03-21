@@ -103,7 +103,6 @@
         state: restarted
         daemon_reload: yes
 
-
     - name: test Docker Registry
       uri:
         url: http://{{ master_ip }}:5000/v2/

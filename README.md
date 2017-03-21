@@ -29,12 +29,7 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 ```bash
 +-------------------------------------------------------------------------------+
 |                                                                               |
-|                                                                               |
 |   +-----------------------------------------------------------+               |
-|   |                                                           |               |
-|   |                                                           |               |
-|   |                                                           |               |
-|   |                                                           |               |
 |   |                                                           |               |
 |   |                                         +-------+         |               |
 |   |                                   +-----+atomic0+-----+   |               |
@@ -45,7 +40,6 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 |   |  use 'vagrant ssh control'        |     +-------+     |   |               |
 |   |  to enter the Ansible control                             |               |
 |   |  box                                                      |               |
-|   |                                                           |               |
 |   |                              Host-only            NAT     |               |
 |   |                              network              network |               |
 |   |Virtualbox                                                 |               |
