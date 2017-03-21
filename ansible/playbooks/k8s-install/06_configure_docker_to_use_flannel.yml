@@ -16,6 +16,12 @@
         #line: "OPTIONS='--log-driver=journald --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}'"
         line: "OPTIONS='--log-driver=journald'"
 
+#    - name: Allow insecure
+#      lineinfile:
+#        dest: "/etc/sysconfig/docker"
+#        regexp: '^INSECURE_REGISTRY='
+#        line: "INSECURE_REGISTRY='--insecure-registry'"
+
 
 #    - name: rm -fr /var/lib/docker/network/*
 #      command: 'rm -fr /var/lib/docker/network/*'

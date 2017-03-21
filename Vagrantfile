@@ -85,11 +85,24 @@ Vagrant.configure("2") do |config|
 
   # always use Vagrants insecure key
   config.ssh.insert_key = false
+  config.ssh.private_key_path = File.expand_path('./insecure_private_key')
+
   # forward ssh agent to easily ssh into the different machines
   config.ssh.forward_agent = true
 
   # Enable hostmanager by default - to update /etc/hosts (https://github.com/devopsgroup-io/vagrant-hostmanager)
   config.hostmanager.enabled = true
+
+
+  # force virtualbox as mechanism for shared folders
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  config.hostmanager.enabled = true
+
+  config.vm.provision "shell", inline: "echo 'Hello from Guest'"
+
+  config.vm.box = "centos/7"
+
 
   config.vm.define "control", primary: true do |h|
 
@@ -98,7 +111,6 @@ Vagrant.configure("2") do |config|
       config.vbguest.auto_update = true
     end
 
-    h.vm.box = "centos/7"
     h.vm.hostname = "control"
     # force virtualbox as mechanism for shared folders
     h.vm.synced_folder ".", "/vagrant", type: "virtualbox"
@@ -107,39 +119,24 @@ Vagrant.configure("2") do |config|
       vb.gui = $vm_gui
       vb.memory = $vm_memory
       vb.cpus = $vm_cpus
-      vb.customize ['modifyvm', :id, '--cpuexecutioncap', "#{$vb_cpuexecutioncap}"]
-      vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
-      vb.customize ['modifyvm', :id, '--ioapic', 'on']
+      #vb.customize ['modifyvm', :id, '--cpuexecutioncap', "#{$vb_cpuexecutioncap}"]
+      #vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+      #vb.customize ['modifyvm', :id, '--ioapic', 'on']
 
       # On CentOS support guest additions and functional vboxsf
       vb.check_guest_additions = true
       vb.functional_vboxsf     = true
     end
 
-    # centos hack to get the private_network going
-    h.vm.provision "shell", run: "always", inline: "systemctl restart network"
+    h.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
+    h.vm.provision "file", source: "./insecure_private_key", destination: "/home/vagrant/insecure_private_key"
+    h.vm.provision "shell", inline: "mv ./insecure_private_key ./.ssh/id_rsa", privileged: false
+    h.vm.provision "shell", inline: "chmod 400 /home/vagrant/.ssh/id_rsa"
+    h.vm.provision "shell", inline: "chown -R vagrant:vagrant /home/vagrant/.ssh/"
+    h.vm.provision "shell", inline: "yum install epel-release -y"
+    h.vm.provision "shell", inline: "yum install ansible -y"
     h.vm.provision "shell", :inline => <<'RUBY_HERE_DOCUMENT1'
-echo "provisioning as user: $USER"
-
-echo 'LC_CTYPE="en_US.UTF-8"' | sudo tee -a /etc/environment
-
-yum install epel-release -y
-yum install ansible -y
-
-if [ ! -f "/home/vagrant/.ssh/id_rsa" ]; then
-  ssh-keygen -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
-fi
-cp /home/vagrant/.ssh/id_rsa.pub /vagrant/ansible.pub
-
-
-cat << SSHEOF > /home/vagrant/.ssh/config
-Host *
-  StrictHostKeyChecking no
-  UserKnownHostsFile=/dev/null
-SSHEOF
-
-chown -R vagrant:vagrant /home/vagrant/.ssh/
-
+    
 sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 # This is the default ansible 'hosts' file.
 #
@@ -155,18 +152,20 @@ sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 atomic[0:0]
 
 [kubernetes-kubelets]
-atomic[1:3]
+atomic[1:1]
 
 ANSIBLEHOSTSEOF
 
 RUBY_HERE_DOCUMENT1
 
+    h.vm.provision "shell", inline: 'sudo ansible all -i "localhost," -c local -m lineinfile -a "dest=/etc/ansible/ansible.cfg regexp=\'^#host_key_checking\' line=\'host_key_checking = False\'"'
   end
+
 
   config.vm.provision "shell", inline: "echo 'Hello from All'"
 
 
-  (0..3).each do |n|
+  (0..1).each do |n|
     config.vm.define "atomic#{n}" do |atomic|
       atomic.vm.provision "shell", inline: "echo 'Hello from Atomic'"
       # plugin conflict
@@ -182,15 +181,16 @@ RUBY_HERE_DOCUMENT1
         vb.gui = $vm_gui
         vb.memory = $vm_memory
         vb.cpus = $vm_cpus
-        vb.customize ['modifyvm', :id, '--cpuexecutioncap', "#{$vb_cpuexecutioncap}"]
-        vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
-        vb.customize ['modifyvm', :id, '--ioapic', 'on']
+        #vb.customize ['modifyvm', :id, '--cpuexecutioncap', "#{$vb_cpuexecutioncap}"]
+        #vb.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+        #vb.customize ['modifyvm', :id, '--ioapic', 'on']
       end
       # centos hack to get the private_network going
-      #master.vm.provision "shell", run: "always", inline: "ifup enp0s8"
+      atomic.vm.provision "shell", run: "always", inline: "ifup enp0s8"
+      atomic.vm.provision "file", source: "./vagrant.pub", destination: "/home/vagrant/vagrant.pub"
+      atomic.vm.provision "shell", inline: "cat /home/vagrant/vagrant.pub >> /home/vagrant/.ssh/authorized_keys"
+      atomic.vm.provision "shell", inline: "rm /home/vagrant/vagrant.pub"
       atomic.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
-      atomic.vm.provision "file", run: "always", source: "./ansible.pub", destination: "/home/vagrant/ansible.pub"
-      atomic.vm.provision "shell", run: "always", inline: "cat /home/vagrant/ansible.pub >> /home/vagrant/.ssh/authorized_keys"
     end
   end
 end
