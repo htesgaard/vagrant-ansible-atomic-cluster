@@ -10,8 +10,8 @@ user_to_configure_kubectl_for=vagrant
 
 
 [kubernetes-masters]
-atomic[0:0]
+atomic[1:1]
 
 [kubernetes-kubelets]
-atomic[1:1]
+atomic[2:2]
 
