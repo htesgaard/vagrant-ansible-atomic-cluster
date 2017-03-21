@@ -32,11 +32,11 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 |   +-----------------------------------------------------------+               |
 |   |                                                           |               |
 |   |                                         +-------+         |               |
-|   |                                   +-----+atomic0+-----+   |               |
+|   |                                   +-----+atomic1+-----+   |               |
 |   |                 +---------+       |     +-------+     |   |   +-------+   |
 |   |                 | control +-------+                   +-------+Vagrant|   |
 |   |                 +---------+       |     +-------+     |   |   +-------+   |
-|   |  After 'vagrant up',              +-----+atomic1+-----+ <- port forwarding|
+|   |  After 'vagrant up',              +-----+atomic2+-----+ <- port forwarding|
 |   |  use 'vagrant ssh control'        |     +-------+     |   |               |
 |   |  to enter the Ansible control                             |               |
 |   |  box                                                      |               |
@@ -87,7 +87,7 @@ Job for network.service failed because the control process exited with error cod
 
 But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly. So to start this ignoring the errors as a one-liner use this command:    
 ```bash
-vagrant up control && (vagrant up atomic0 || vagrant up atomic0) && (vagrant up atomic1 || vagrant up atomic1)
+vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2)
 ```
 
 Be shure to activate the hos-only adapters on the atomic hosts before running any other playbooks above. If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
@@ -199,11 +199,11 @@ atomic[1:1]
 To test the setup you should be able to execute the following command with success:
 ```bash
 [vagrant@control playbooks]$ ansible -m ping all
-atomic0 | SUCCESS => {
+atomic1 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-atomic1 | SUCCESS => {
+atomic2 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
