@@ -189,32 +189,25 @@ To configure ansible to know the topology the /etc/ansible/hosts should contain 
 #   - You can enter hostnames or ip addresses
 #   - A hostname/ip can be a member of multiple groups
                                                       
-[masters]
-master1
+[kubernetes-masters]
+atomic[0:0]
 
-[minions]
-minion[1:4]
+[kubernetes-kubelets]
+atomic[1:1]
 ```
 
 To test the setup you should be able to execute the following command with success:
 ```bash
-[vagrant@control ansible]$ ansible -m ping all
-master1 | SUCCESS => {
+[vagrant@control playbooks]$ ansible -m ping all
+atomic0 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-minion3 | SUCCESS => {
+atomic1 | SUCCESS => {
     "changed": false,
     "ping": "pong"
 }
-minion2 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-minion1 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
+
 ```
 
 #Errors
@@ -251,8 +244,10 @@ The idea is to configure Kubernetes on all the _boxes_ running “atomic” usin
 
 ## Configure Kubernetes
 Configure Kubernetes manually by following theese guides:
-* [Containerized master](https://wiki.centos.org/SpecialInterestGroup/Atomic/ContainerizedMaster)
 * [Project Atomic Getting Started Guide](http://www.projectatomic.io/docs/gettingstarted/)
+
+Later on maybe get this going:
+* [Containerized master](https://wiki.centos.org/SpecialInterestGroup/Atomic/ContainerizedMaster)
 
 
 When that is done, reset the atomic _boxes_ using the command ´vagrant destroy -f master1 minion1 minion2 minion3 && vagrant up master1 minion1 minion2 minion3 ´, no it's time implement an Ansible playbook for automating configuring Kubernetes as an Ansible playbook.
@@ -261,10 +256,12 @@ When that is done, reset the atomic _boxes_ using the command ´vagrant destroy 
 
 Ensure atomic version 
 ```bash
-user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
 $ vagrant ssh control
-Last login: Wed Feb 22 16:42:29 2017 from 10.0.2.2
-[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/force_upgrade_downgrade_atomic_version.yml
+[vagrant@control ~]$ cd /vagrant/ansible/playbooks/
+[vagrant@control playbooks]$ ansible-playbook 0_enable_host_only_network_after_reboot.yml -i VAGRANT_INVENTORY
+...
+[vagrant@control playbooks]$ ansible-playbook 0_force_upgrade_downgrade_atomic_version.yml -i VAGRANT_INVENTORY
+...
 ```
   
 ## Vagrant tips
