@@ -66,7 +66,7 @@ sudo cat << ANSIBLEHOSTSEOF > /etc/ansible/hosts
 atomic[1:1]
 
 [kubernetes-kubelets]
-atomic[2:2]
+atomic[2:3]
 
 ANSIBLEHOSTSEOF
 
@@ -99,7 +99,7 @@ RUBY_HERE_DOCUMENT1
 
   config.vm.provision "shell", inline: "echo 'Hello from All'"
 
-  (1..2).each do |index|
+  (1..3).each do |index|
     config.vm.define "atomic#{index}" do |atomic|
       atomic.vm.provision "shell", inline: "echo 'Hello from Atomic'"
       # plugin conflict

@@ -18,5 +18,5 @@ kubernetes-kubelets
 atomic[1:1]
 
 [kubernetes-kubelets]
-atomic[2:2]
+atomic[2:3]
 

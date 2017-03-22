@@ -38,5 +38,6 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 . ~/.bashrc
 
 # show node pod capacity
-sudo yum install jq
+sudo yum install jq -y
 kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, capacity: .status.capacity}'
+kubectl get nodes

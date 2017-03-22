@@ -50,12 +50,6 @@
         state: started
         #daemon_reload: yes
 
-    - wait_for:
-        port: 8000
-
     - name: Wait for port 2379
-      systemd:
-        name: etcd
-        enabled: yes
-        state: started
-        #daemon_reload: yes
+      wait_for:
+        port: 2379
