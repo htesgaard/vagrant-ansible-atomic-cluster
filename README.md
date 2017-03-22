@@ -87,7 +87,7 @@ Job for network.service failed because the control process exited with error cod
 
 But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly. So to start this ignoring the errors as a one-liner use this command:    
 ```bash
-vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2)
+vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2) && (vagrant up atomic3 || vagrant up atomic3)
 ```
 
 Be shure to activate the hos-only adapters on the atomic hosts before running any other playbooks above. If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
@@ -257,13 +257,7 @@ When that is done, reset the atomic _boxes_ using the command ´vagrant destroy 
 Downgrade atomic and install Kubernetes
 ```bash
 $ vagrant ssh control
-[vagrant@control ~]$ cd /vagrant/ansible/playbooks/
-[vagrant@control playbooks]$ ansible-playbook 0_enable_host_only_network_after_reboot.yml -i VAGRANT_INVENTORY
-...
-[vagrant@control playbooks]$ ansible-playbook 0_force_upgrade_downgrade_atomic_version.yml -i VAGRANT_INVENTORY
-...
-cd k8s-install/
-for i in *.yml; do ansible-playbook "$i" -i ../VAGRANT_INVENTORY; done
+[vagrant@control ~]$ /vagrant/scripts/all.sh
 ```
   
 ## Vagrant tips
