@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: kubernetes-all
   become: true
   become_user: root
   tasks:

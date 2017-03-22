@@ -1,20 +1,15 @@
 ---
 # This playbook only adds the flannel configuration to the etcd server
 - hosts: kubernetes-masters
-  become: true
-  become_user: root
+  become_user: vagrant
   tasks:
+    - name: Copy flannel cibfiguration json
+      copy:
+        src: "{{ playbook_dir }}/resource/flannel-config-udp.json"
+        dest: '~/flannel-config-udp.json'
+
     - name: Configure flannel
-      uri:
-        #url: "{{ etcd_server }}/v2/keys{{ etcd_prefix }}/config"
-        url: "http://{{ etcd_server }}:2379/v2/keys{{ etcd_prefix }}/config"
-        method: PUT
-        body: |-
-          value={ "Network": "172.16.0.0/12", "SubnetLen": 24, "Backend": { "Type": "vxlan"} }
-        status_code: 200, 201 # 201 is returned when created. Otherwise 200 is returned.
-        return_content: yes
-        HEADER_Content-Type: "application/x-www-form-urlencoded"
-        body_format: json
+      shell: 'etcdctl set /atomic.io/network/config < ~/flannel-config-udp.json'
 
     - name: Test the change
       uri:
@@ -24,6 +19,3 @@
       register: test_flannel
       #Check that
       until:  '"Network" in test_flannel.content'
-      retries: 5
-      delay: 2
-      ignore_errors: yes

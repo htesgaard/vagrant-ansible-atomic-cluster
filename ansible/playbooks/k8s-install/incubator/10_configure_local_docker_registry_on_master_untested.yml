@@ -87,7 +87,7 @@
         name: local-registry
         state: started
 
-- hosts: all
+- hosts: kubernetes-all
   become: true
   tasks:
     - name: Configuring Docker to use the cluster registry cache

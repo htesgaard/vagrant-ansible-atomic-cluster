@@ -10,6 +10,10 @@ user_to_configure_kubectl_for=vagrant
 [ansible-controller]
 control connection=local
 
+[kubernetes-all:children]
+kubernetes-masters
+kubernetes-kubelets
+
 [kubernetes-masters]
 atomic[1:1]
 

@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: kubernetes-all
   become: true
   tasks:
     - name: Verify Ansible version
@@ -8,11 +8,16 @@
         msg: >
           "To use the playbook on Ansible >= 2.3, you must change the 'lineinfile' property 'dest' to path "
 
-    - name: Set FLANNEL_ETCD_ENDPOINTS
-      lineinfile:
-        dest: "/etc/sysconfig/flanneld"
-        regexp: '^FLANNEL_ETCD_ENDPOINTS='
-        line: 'FLANNEL_ETCD_ENDPOINTS="http://{{ master_ip }}:2379"'
+    # Before installing flannel, be sure you have the etcd endpoint. Flannel needs etcd as its datastore. If Docker is running, stop the Docker service first and delete docker0
+    - name: Stop docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: stopped
+
+    - name: Prepare for flannel, delete the default virtual bridge del docker0
+      command: 'ip link del docker0'
+      ignore_errors: yes
 
     - name: Set FLANNEL_ETCD
       lineinfile:
@@ -20,6 +25,7 @@
         regexp: '^FLANNEL_ETCD='
         line: 'FLANNEL_ETCD="http://{{ master_ip }}:2379"'
 
+    # Configure flannel daemon
     - name: Set FLANNEL_ETCD_KEY config key. This is the configuration key that flannel queriesFor address range assignment
       lineinfile:
         dest: "/etc/sysconfig/flanneld"
@@ -35,7 +41,7 @@
     - name: Set FLANNEL_ETCD_PREFIX
       lineinfile:
         dest: "/etc/sysconfig/flanneld"
-        regexp: '^FLANNEL_OPTIONS='
+        regexp: '^#?FLANNEL_OPTIONS='
         line: 'FLANNEL_OPTIONS="--iface={{ kubernetes_nic_name }}"'
 
 #    - name: Copy locked /usr/lib/systemd/system/flanneld.service to unlocked /etc/systemd/system/flanneld.service
