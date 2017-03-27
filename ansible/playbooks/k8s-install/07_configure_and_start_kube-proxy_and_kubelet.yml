@@ -30,10 +30,10 @@
         line: 'KUBELET_API_SERVER="--api_servers=http://{{ master_ip }}:8080"'
 
     - name: Configure KUBELET_ARGS - add your own arguments
-          lineinfile:
-            dest: "/etc/kubernetes/kubelet"
-            regexp: '^KUBELET_ARGS='
-            line: 'KUBELET_ARGS=\"--auth_path=/var/lib/kubelet/auth\"'
+      lineinfile:
+        dest: "/etc/kubernetes/kubelet"
+        regexp: '^KUBELET_ARGS='
+        line: 'KUBELET_ARGS=\"--auth_path=/var/lib/kubelet/auth\"'
 
 
     - name: Reload kubelet

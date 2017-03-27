@@ -1,7 +1,7 @@
 
 [all:vars]
-master_ip=192.168.99.1
-etcd_server=192.168.99.1
+master_ip=192.168.99.11
+etcd_server=192.168.99.11
 kubernetes_nic_name=enp0s8
 kubernetes_host_ip={{ ansible_enp0s8.ipv4.address }}
 etcd_prefix=/atomic.io/network

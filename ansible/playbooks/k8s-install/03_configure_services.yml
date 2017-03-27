@@ -79,17 +79,19 @@
         line: 'KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file=/etc/kubernetes/certs/server.key --root-ca-file=/etc/kubernetes/certs/ca.crt"'
 
 
-    # sudo systemctl restart kube-apiserver
-    - name: Enable and start kube-apiserver
-      systemd:
-        name: kube-apiserver
-        enabled: yes
-        state: restarted
-        daemon_reload: yes
+
 
     - name: Enable and start kube-controller-manager
       systemd:
         name: kube-controller-manager
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
+    # sudo systemctl restart kube-apiserver
+    - name: Enable and start kube-apiserver
+      systemd:
+        name: kube-apiserver
         enabled: yes
         state: restarted
         daemon_reload: yes

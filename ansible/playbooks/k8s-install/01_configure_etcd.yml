@@ -3,7 +3,7 @@
   become: true
   tasks:
     - name: Backup default configutation on all nodes, copy all  .orig files
-      command: 'for i in $(ls /etc/kubernetes/*); do cp $i{,.orig}; done'
+      shell: 'for i in $(find /etc/kubernetes/ -type f ! -name "*.*"); do cp $i{,.orig}; done'
 
     - name: Disable SELinux on all nodes
       selinux:
