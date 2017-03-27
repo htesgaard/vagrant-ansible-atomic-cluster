@@ -2,8 +2,14 @@
 - hosts: kubernetes-kubelets
   become: true
   tasks:
+    # https://kubernetes.io/docs/admin/kubelet/
+
     # TODO test this
-    - name: Configure KUBELET_ADDRESS
+    - name: Due to a bug in kubernetes we must configure an empty JSON authorization file on each node.
+      command: echo "{}" > /var/lib/kubelet/auth
+
+    # TODO test this
+    - name: Configure KUBELET_ADDRESS - The address for the info server to serve on
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_ADDRESS='
@@ -14,6 +20,8 @@
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_HOSTNAME='
         line: 'KUBELET_HOSTNAME="--hostname_override={{ kubernetes_host_ip }}"'
+        #line: 'KUBELET_HOSTNAME="--hostname_override={{ inventory_hostname }}"'
+
 
     - name: Configure location of the api-server
       lineinfile:
@@ -21,11 +29,12 @@
         regexp: '^KUBELET_API_SERVER='
         line: 'KUBELET_API_SERVER="--api_servers=http://{{ master_ip }}:8080"'
 
-    - name: Configure location of the etcd server
-      lineinfile:
-        dest: "/etc/kubernetes/config"
-        regexp: '^KUBE_MASTER='
-        line: 'KUBE_MASTER="--master=http://{{ master_ip }}:8080"'
+    - name: Configure KUBELET_ARGS - add your own arguments
+          lineinfile:
+            dest: "/etc/kubernetes/kubelet"
+            regexp: '^KUBELET_ARGS='
+            line: 'KUBELET_ARGS=\"--auth_path=/var/lib/kubelet/auth\"'
+
 
     - name: Reload kubelet
       systemd:
