@@ -6,7 +6,7 @@
 
     # TODO test this
     - name: Due to a bug in kubernetes we must configure an empty JSON authorization file on each node.
-      command: echo "{}" > /var/lib/kubelet/auth
+      shell: echo "{}" > /var/lib/kubelet/auth
 
     # TODO test this
     - name: Configure KUBELET_ADDRESS - The address for the info server to serve on
@@ -34,6 +34,7 @@
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_ARGS='
         line: 'KUBELET_ARGS=\"--auth_path=/var/lib/kubelet/auth\"'
+        #line: 'KUBELET_ARGS=\""'
 
 
     - name: Reload kubelet
