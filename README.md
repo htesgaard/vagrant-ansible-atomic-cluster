@@ -1,6 +1,12 @@
 # vagrant-ansible-atomic-cluster
 A basic Vagrant setup to configure Kubernetes on Atomic boxes using Ansible.
 
+# Table of Contents
+1. [Prerequisites](#prerequisites)
+2. [Usage](#usage)
+3. [Common errors](#common-errors)
+4. [Exercises](#exercises) 
+
 # Prerequisites
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
 * [Vagrant](https://www.vagrantup.com/docs/installation/)
@@ -52,9 +58,9 @@ Hostfiles are automatically configured, so any host can ping the other hosts by 
 Created using: http://asciiflow.com/
 ```
 
-## Usage
+# Usage
 
-# Getting started
+## Getting started
 To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes_ using the command `vagrant up`.
 
 The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
@@ -187,7 +193,7 @@ best platform for your Linux Docker Kubernetes (LDK) application stack."
 The intention is not to allow tainting the kernel.
 
 
-# Errors
+# Common errors
 
 If you get this error try running `vagrant up` again
 ```bash
@@ -247,7 +253,7 @@ If not, check the systemd logs using the coimmand `sudo journalctl -u docker`.
 
 *Note!* To interact with docker on atomic by default always do `sudo docker <cmd>`, that's because IPC access to the docker deamon via the file `/var/run/docker.sock` require sudo rights 
 
-# Exercise
+# Exercises
 The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and Docker.
 
 ## Configure Kubernetes
