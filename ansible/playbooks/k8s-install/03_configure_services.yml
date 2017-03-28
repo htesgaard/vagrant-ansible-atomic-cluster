@@ -1,26 +1,50 @@
 ---
+- hosts: kubernetes-all
+  become: true
+  become_user: root
+  tasks:
+    # Shared Configuration for all Kubernetes Services in the file /etc/kubernetes/config
+    - name: Shared configuration - KUBE_LOGTOSTDERR - logging to stderr means we get it in the systemd journal
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_LOGTOSTDERR='
+        line: 'KUBE_LOGTOSTDERR=\"--logtostderr=true\"'
+
+    - name: Shared configuration - KUBE_LOG_LEVEL -journal message level, 0 is debug
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_LOG_LEVEL='
+        line: 'KUBE_LOG_LEVEL=\"--v=0\"'
+
+    - name: Shared configuration - KUBE_ALLOW_PRIV - Should this cluster be allowed to run privileged docker containers
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_MASTER='
+        line: 'KUBE_ALLOW_PRIV=\"--allow_privileged=false\"'
+
+    - name: Shared configuration - Configure KUBE_MASTER - How the replication controller and scheduler find the apiserver
+      lineinfile:
+        dest: "/etc/kubernetes/config"
+        regexp: '^KUBE_MASTER='
+        line: 'KUBE_MASTER=\"--master=http://{{ master_ip }}:8080\"'
+
 - hosts: kubernetes-masters
   become: true
   become_user: root
   tasks:
+
+    # Configure the Kubernetes API Server
     - name: Configure KUBE_ETCD_SERVERS
       lineinfile:
-        dest: "/etc/kubernetes/config"
+        dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_ETCD_SERVERS='
-        line: 'KUBE_ETCD_SERVERS="--etcd_servers=http://{{ master_ip }}:2379"'
-
-    # TODO (somehow this tasks dosen't seams to be executed)
-    - name: Configure KUBE_MASTER
-      lineinfile:
-        dest: "/etc/kubernetes/config"
-        regexp: '^KUBE_MASTER='
-        line: 'KUBE_MASTER="--master=http://{{ master_ip }}:8080"'
+        line: "KUBE_ETCD_SERVERS=\"--etcd_servers=http://{{ master_ip }}:2379\""
 
     - name: Configure KUBE_API_ADDRESS
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_API_ADDRESS='
-        line: 'KUBE_API_ADDRESS="--address=0.0.0.0"'
+        line: 'KUBE_API_ADDRESS="--address={{ master_ip }}"'
 
     - name: Configure KUBE_API_PORT
       lineinfile:
@@ -28,17 +52,17 @@
         regexp: '^KUBE_API_PORT='
         line: 'KUBE_API_PORT="--secure-port=6443 --insecure-port=8080"'
 
-#    # If you need to modify the set of IPs that Kubernetes assigns to services,
-#    # change the KUBE_SERVICE_ADDRESSES value. Since this guide is using the 192.168.122.0/24
-#    # and 172.16.0.0/12 networks, we can leave the default. This address space needs to be unused elsewhere,
-#    # but doesn’t need to be reachable from either of the other networks.
-#    #
-#    # Address range to use for services
-#    - name: Configure KUBE_SERVICE_ADDRESSES
-#      lineinfile:
-#        dest: "/etc/kubernetes/apiserver"
-#        regexp: '^KUBE_SERVICE_ADDRESSES='
-#        line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.254.0.0/16"'
+    # If you need to modify the set of IPs that Kubernetes assigns to services,
+    # change the KUBE_SERVICE_ADDRESSES value. Since this guide is using the 192.168.122.0/24
+    # and 172.16.0.0/12 networks, we can leave the default. This address space needs to be unused elsewhere,
+    # but doesn’t need to be reachable from either of the other networks.
+    #
+    # Address range to use for services
+    - name: Configure KUBE_SERVICE_ADDRESSES
+      lineinfile:
+        dest: "/etc/kubernetes/apiserver"
+        regexp: '^KUBE_SERVICE_ADDRESSES='
+        line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.254.0.0/16"'
 
     # We’ll also add parameters for the certificates we generated earlier.
     # Add your own certs!
@@ -55,17 +79,19 @@
         line: 'KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file=/etc/kubernetes/certs/server.key --root-ca-file=/etc/kubernetes/certs/ca.crt"'
 
 
-    # sudo systemctl restart kube-apiserver
-    - name: Enable and start kube-apiserver
-      systemd:
-        name: kube-apiserver
-        enabled: yes
-        state: restarted
-        daemon_reload: yes
+
 
     - name: Enable and start kube-controller-manager
       systemd:
         name: kube-controller-manager
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
+    # sudo systemctl restart kube-apiserver
+    - name: Enable and start kube-apiserver
+      systemd:
+        name: kube-apiserver
         enabled: yes
         state: restarted
         daemon_reload: yes

@@ -109,7 +109,7 @@ RUBY_HERE_DOCUMENT1
 
       atomic.vm.box = "centos/atomic-host"
       atomic.vm.hostname = "atomic#{index}"
-      atomic.vm.provision :shell, inline: "sed 's/127\.0\.0\.1.*atomic.*/192\.168\.99\.#{index} k8s#{index}/' -i /etc/hosts"
+      atomic.vm.provision :shell, inline: "sed 's/127\.0\.0\.1.*atomic.*/192\.168\.99\.#{index+10} k8s#{index}/' -i /etc/hosts"
 
       # centos hack to get the private_network going
       #atomic.vm.provision "shell", run: "always", inline: "ifup enp0s8"
@@ -118,7 +118,7 @@ RUBY_HERE_DOCUMENT1
       atomic.vm.provision "shell", inline: "rm /home/vagrant/vagrant.pub"
       atomic.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
 
-      atomic.vm.network "private_network", ip: "192.168.99.#{index}", netmask: "255.255.255.0",
+      atomic.vm.network "private_network", ip: "192.168.99.#{index+10}", netmask: "255.255.255.0",
          auto_config: true,
          virtualbox__intnet: "k8s-net"
       atomic.vm.provider "virtualbox" do |v|

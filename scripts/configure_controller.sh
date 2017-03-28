@@ -13,5 +13,7 @@ echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 # show node pod capacity
 sudo yum install jq -y
-kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, capacity: .status.capacity}'
-kubectl get nodes
+kubectl get node
+echo 'Nodes must be STATUS "Ready" for the following command to complete successfully'
+kubectl get node -o json | jq '.items[] | {name: .metadata.name, capacity: .status.capacity}'
+kubectl get node

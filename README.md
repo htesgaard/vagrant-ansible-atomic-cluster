@@ -90,12 +90,12 @@ But if you rerun 'vagrant up' a second time on all the atomic boxes, it will ini
 vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2) && (vagrant up atomic3 || vagrant up atomic3)
 ```
 
-Be shure to activate the hos-only adapters on the atomic hosts before running any other playbooks above. If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
+Be shure to activate the hos-only adapters (this step is now part of the all.sh script explained later) on the atomic hosts before running any other playbooks above. If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
 That can be fixed as by running this command:
 ```bash
 user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
 $ vagrant ssh control
-[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/enable_host_only_network_after_reboot.yml
+[vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/0_enable_host_only_network_after_reboot.yml -i /vagrant/ansible/playbooks/VAGRANT_INVENTORY
 ```
 
 ## ssh pki authentication 
@@ -162,10 +162,8 @@ ansible  ansible.pub  README.md  Vagrantfile
 [vagrant@control ~]$
 ```
 
-###atomic boxes
-*[atomic](http://www.projectatomic.io/)
-
-Atomic is "immutable infrastructure to deploy and scale your containerized applications. Project Atomic provides the
+### [Atomic](http://www.projectatomic.io/) boxes
+[Atomic](http://www.projectatomic.io/) is "immutable infrastructure to deploy and scale your containerized applications. Project Atomic provides the
 best platform for your Linux Docker Kubernetes (LDK) application stack."
 The intention is not to allow tainting the kernel.
 
@@ -257,7 +255,7 @@ When that is done, reset the atomic _boxes_ using the command ´vagrant destroy 
 Downgrade atomic and install Kubernetes
 ```bash
 $ vagrant ssh control
-[vagrant@control ~]$ /vagrant/scripts/all.sh
+[vagrant@control ~]$ chmod +x /vagrant/scripts/*.sh && /vagrant/scripts/all.sh
 ```
   
 ## Vagrant tips
