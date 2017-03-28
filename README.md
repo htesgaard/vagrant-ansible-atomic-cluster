@@ -115,7 +115,7 @@ $ vagrant ssh control
 [vagrant@control ~]$ ansible-playbook /vagrant/ansible/playbooks/0_enable_host_only_network_after_reboot.yml -i /vagrant/ansible/playbooks/VAGRANT_INVENTORY
 ```
 
-## ssh pki authentication 
+## Details about ssh pki authentication 
 An example showing how the _boxes_ can be accessed directly without authentication because _contol_ box public key is
 included in `.ssh/authorized_keys` on all the other _boxes_.
 
@@ -155,10 +155,13 @@ logout
 Connection to 127.0.0.1 closed.
 ```
 
-## Atomic and Centos
+## The boxes in this setup - Atomic and Centos
+
 The os-distros used in this setup is
-### Control _box
+
+### Centos control box 
 * [centos7](https://www.centos.org/download/)
+This runs Ansible, used to provision and configure K8s on the Atomic boxes.  
 
 #### control box shared folder 
 The control vm gets populated with virtualbox guest-additions. That allows it to use
@@ -179,11 +182,10 @@ ansible  ansible.pub  README.md  Vagrantfile
 [vagrant@control ~]$
 ```
 
-### [Atomic](http://www.projectatomic.io/) boxes
+### [Atomic](http://www.projectatomic.io/) K8s boxes
 [Atomic](http://www.projectatomic.io/) is "immutable infrastructure to deploy and scale your containerized applications. Project Atomic provides the
 best platform for your Linux Docker Kubernetes (LDK) application stack."
 The intention is not to allow tainting the kernel.
-
 
 
 # Errors
