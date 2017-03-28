@@ -64,7 +64,7 @@ Created using: http://asciiflow.com/
 To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes_ using the command `vagrant up`.
 
 The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
-Just ignore theese errors. For details see the [errors](#errors) section.
+Just ignore theese errors. For details see the [common errors](#common-errors) section.
 
 So to get going, you need the 'annoying' oneliner: 
 ```bash
