@@ -13,22 +13,21 @@
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_HOSTNAME='
-        line: 'KUBELET_HOSTNAME="--hostname_override={{ kubernetes_host_ip }}"'
-        #line: 'KUBELET_HOSTNAME="--hostname_override={{ inventory_hostname }}"'
+        #line: 'KUBELET_HOSTNAME="--hostname-override={{ kubernetes_host_ip }}"'
+        line: 'KUBELET_HOSTNAME="--hostname-override={{ inventory_hostname }}"'
 
-
-    - name: Configure location of the api-server
+    - name: Configure KUBELET_API_SERVER - location of the api-server
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_API_SERVER='
-        line: 'KUBELET_API_SERVER="--api_servers=http://{{ master_ip }}:8080"'
+        line: 'KUBELET_API_SERVER="--api-servers=http://{{ master_ip }}:8080"'
 
     - name: Configure KUBELET_ARGS - add your own arguments
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_ARGS='
-        line: 'KUBELET_ARGS=\"--auth_path=/var/lib/kubelet/auth\"'
-        #line: 'KUBELET_ARGS=\""'
+        line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
+        #line: 'KUBELET_ARGS=""'
 
 
     - name: Reload kubelet

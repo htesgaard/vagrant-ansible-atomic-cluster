@@ -23,16 +23,16 @@
       lineinfile:
         dest: "/etc/etcd/etcd.conf"
         regexp: '^ETCD_LISTEN_CLIENT_URLS='
-        line: 'ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"'
+        line: 'ETCD_LISTEN_CLIENT_URLS="http://{{ master_ip }}:2379,http://{{ master_ip }}:4001"'
 
     # TODO remove port 4001
-    - name: ETCD_ADVERTISE_CLIENT_URLS used for etcd clusters. We aer single node so we listen on ports 2379 and 4001
+    - name: Configure ETCD_ADVERTISE_CLIENT_URLS
       lineinfile:
         dest: "/etc/etcd/etcd.conf"
         regexp: '^ETCD_ADVERTISE_CLIENT_URLS='
         #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001,http://atomic0:2379,http://atomic0:4001"'
-        #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://{{ master_ip }}:2379,http://{{ master_ip }}:4001"'
-        line: 'ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379,http://localhost:4001"'
+        #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379,http://localhost:4001"'
+        line: 'ETCD_ADVERTISE_CLIENT_URLS="http://{{ master_ip }}:2379,http://{{ master_ip }}:4001"'
 
     - name: Enabled etcd debugging
       lineinfile:

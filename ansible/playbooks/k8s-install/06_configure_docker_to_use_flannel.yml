@@ -35,4 +35,5 @@
         name: docker
         enabled: yes
         state: restarted
-        # reload isn't supported
+        daemon_reload: yes
+
