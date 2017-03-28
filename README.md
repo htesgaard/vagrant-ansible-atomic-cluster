@@ -160,8 +160,7 @@ Connection to 127.0.0.1 closed.
 The os-distros used in this setup is
 
 ### Centos control box 
-* [centos7](https://www.centos.org/download/)
-This runs Ansible, used to provision and configure K8s on the Atomic boxes.  
+* [centos7](https://www.centos.org/download/) - this runs Ansible, used to provision and configure K8s on the Atomic boxes.  
 
 #### control box shared folder 
 The control vm gets populated with virtualbox guest-additions. That allows it to use
@@ -232,14 +231,14 @@ Stdout from the command:
 
 Restarting network (via systemctl):  [FAILED]
 
-
 Stderr from the command:
 
 usage: ifdown <configuration>
 Job for network.service failed because the control process exited with error code. See "systemctl status network.service" and "journalctl -xe" for details.
 ```
 
-But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly. So for the getting started one-liner see the (getting started)[#getting-started] section 
+But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly.
+So for the getting started one-liner see the [getting started](#getting-started) section.  
 
 ## Check if docker is running
 
@@ -249,7 +248,7 @@ If not, check the systemd logs using the coimmand `sudo journalctl -u docker`.
 *Note!* To interact with docker on atomic by default always do `sudo docker <cmd>`, that's because IPC access to the docker deamon via the file `/var/run/docker.sock` require sudo rights 
 
 # Exercise
-The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
+The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and Docker.
 
 ## Configure Kubernetes
 Configure Kubernetes manually by following theese guides:
