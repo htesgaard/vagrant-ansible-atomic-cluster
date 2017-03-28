@@ -40,7 +40,7 @@
         regexp: '^ETCD_DEBUG='
         line: 'ETCD_DEBUG="true"'
 
-    - name: Det debugging levels
+    - name: Set debugging levels
       lineinfile:
         dest: "/etc/etcd/etcd.conf"
         regexp: '^ETCD_LOG_PACKAGE_LEVELS='
