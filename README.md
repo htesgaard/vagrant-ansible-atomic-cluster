@@ -54,7 +54,9 @@ Created using: http://asciiflow.com/
 
 ## Usage
 
-## Getting started
+# Getting started
+To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes_ using the command `vagrant up`.
+
 The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
 Just ignore theese errors. For details see the [errors](#errors) section.
 
@@ -63,8 +65,50 @@ So to get going, you need the 'annoying' oneliner:
 vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up atomic2 || vagrant up atomic2) && (vagrant up atomic3 || vagrant up atomic3)
 ```
 
-Be shure to activate the hos-only adapters (this step is now part of the all.sh script explained later) on the atomic hosts before running any other playbooks above. If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
-That can be fixed as by running this command:
+## Configure Ansible
+Ansible is alredy installed on the _control_ _box. Configure Ansible the current topology 
+by following guide [here](http://docs.ansible.com/ansible/intro_inventory.html)
+
+To configure ansible to know the topology the /etc/ansible/hosts should contain this configuration
+```bash
+[vagrant@control ansible]$ cat hosts
+# This is the default ansible 'hosts' file.
+#
+# It should live in /etc/ansible/hosts
+#
+#   - Comments begin with the '#' character
+#   - Blank lines are ignored
+#   - Groups of hosts are delimited by [header] elements
+#   - You can enter hostnames or ip addresses
+#   - A hostname/ip can be a member of multiple groups
+                                                      
+[kubernetes-masters]
+atomic[0:0]
+
+[kubernetes-kubelets]
+atomic[1:1]
+```
+
+To test the setup you should be able to execute the following command with success:
+```bash
+[vagrant@control playbooks]$ ansible -m ping all
+atomic1 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+atomic2 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+
+```
+
+
+Be shure to activate the hos-only adapters on the atomic hosts before running any other playbooks above.
+This step is now part of the all.sh script, for details see the section [configure kubernetes](#configure-kubernetes)  
+If the os is restarted the host-only NIC's won't auto start before this playbook has been played once.
+
+Activating the host-only NIC's can still be done by running this command:
 ```bash
 user@box ~/projects/vagrant/vagrant-ansible-atomic-cluster
 $ vagrant ssh control
@@ -140,46 +184,7 @@ ansible  ansible.pub  README.md  Vagrantfile
 best platform for your Linux Docker Kubernetes (LDK) application stack."
 The intention is not to allow tainting the kernel.
 
-# Getting started
-To get started `git clone` this [project](https://github.com/htesgaard/vagrant-ansible-atomic-cluster.git) and start up the _boxes_ using the command `vagrant up`.
 
-## Configure Ansible
-Ansible is alredy installed on the _control_ _box. Configure Ansible the current topology 
-by following guide [here](http://docs.ansible.com/ansible/intro_inventory.html)
-
-To configure ansible to know the topology the /etc/ansible/hosts should contain this configuration
-```bash
-[vagrant@control ansible]$ cat hosts
-# This is the default ansible 'hosts' file.
-#
-# It should live in /etc/ansible/hosts
-#
-#   - Comments begin with the '#' character
-#   - Blank lines are ignored
-#   - Groups of hosts are delimited by [header] elements
-#   - You can enter hostnames or ip addresses
-#   - A hostname/ip can be a member of multiple groups
-                                                      
-[kubernetes-masters]
-atomic[0:0]
-
-[kubernetes-kubelets]
-atomic[1:1]
-```
-
-To test the setup you should be able to execute the following command with success:
-```bash
-[vagrant@control playbooks]$ ansible -m ping all
-atomic1 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-atomic2 | SUCCESS => {
-    "changed": false,
-    "ping": "pong"
-}
-
-```
 
 # Errors
 
