@@ -56,7 +56,7 @@ Created using: http://asciiflow.com/
 
 ## Getting started
 The atomic distribution fails initializing the network on vagrant 1.9.2. This seams to be related to the issue [8148](https://github.com/mitchellh/vagrant/pull/8148).
-Just ignore theese errors. For details see the [Errors](#errors) section.
+Just ignore theese errors. For details see the [errors](#errors) section.
 
 So to get going, you need the 'annoying' oneliner: 
 ```bash
@@ -232,7 +232,7 @@ usage: ifdown <configuration>
 Job for network.service failed because the control process exited with error code. See "systemctl status network.service" and "journalctl -xe" for details.
 ```
 
-But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly. So for the getting started one-liner see the (Getting started)[#getting started] section 
+But if you rerun 'vagrant up' a second time on all the atomic boxes, it will initialize correctly. So for the getting started one-liner see the (getting started)[#getting-started] section 
 
 ## Check if docker is running
 
