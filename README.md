@@ -72,7 +72,7 @@ vagrant up control && (vagrant up atomic1 || vagrant up atomic1) && (vagrant up 
 ```
 
 ## Configure Ansible
-Ansible is alredy installed on the _control_ _box. Configure Ansible the current topology 
+Ansible is alredy installed on the _control_ box. Configure Ansible the current topology 
 by following guide [here](http://docs.ansible.com/ansible/intro_inventory.html)
 
 To configure ansible to know the topology the /etc/ansible/hosts should contain this configuration
