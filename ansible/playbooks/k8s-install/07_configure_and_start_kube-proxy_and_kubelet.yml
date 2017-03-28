@@ -2,14 +2,8 @@
 - hosts: kubernetes-kubelets
   become: true
   tasks:
-    # https://kubernetes.io/docs/admin/kubelet/
-
-
-    - name: Due to a bug in kubernetes we must configure an empty JSON authorization file on each node.
-      shell: echo "{}" > /var/lib/kubelet/auth
-
-
-    - name: Configure KUBELET_ADDRESS - The address for the info server to serve on
+    # TODO test this
+    - name: Configure KUBELET_ADDRESS
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_ADDRESS='

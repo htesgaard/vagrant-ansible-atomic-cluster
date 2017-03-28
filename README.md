@@ -234,8 +234,6 @@ The command `sudo systemctl status docker.service` should show that the docker d
 If not, check the systemd logs using the coimmand `sudo journalctl -u docker`.
 
 *Note!* To interact with docker on atomic by default always do `sudo docker <cmd>`, that's because IPC access to the docker deamon via the file `/var/run/docker.sock` require sudo rights 
- 
- 
 
 # Exercise
 The idea is to configure Kubernetes on all the _boxes_ running “atomic” using Ansible (on the _control_ box) as provisioning tool. All the “atomic” _boxes_ contains Kubernetes and Docker software including kubectl and docker.
