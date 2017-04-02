@@ -26,8 +26,8 @@
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
         regexp: '^KUBELET_ARGS='
-        line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
-        #line: 'KUBELET_ARGS=""'
+        #line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
+        line: 'KUBELET_ARGS=""'
 
 
     - name: Reload kubelet

@@ -3,6 +3,12 @@
   become: true
   become_user: root
   tasks:
+    - name: Restore backup
+      copy:
+        src: /etc/kubernetes/config.orig
+        dest: /etc/kubernetes/config
+        remote_src: true
+
     # Shared Configuration for all Kubernetes Services in the file /etc/kubernetes/config
     - name: Shared configuration - KUBE_LOGTOSTDERR - logging to stderr means we get it in the systemd journal
       lineinfile:
@@ -19,7 +25,7 @@
     - name: Shared configuration - KUBE_ALLOW_PRIV - Should this cluster be allowed to run privileged docker containers
       lineinfile:
         dest: "/etc/kubernetes/config"
-        regexp: '^KUBE_MASTER='
+        regexp: '^KUBE_ALLOW_PRIV='
         line: 'KUBE_ALLOW_PRIV="--allow-privileged=true"'
 
     - name: Shared configuration - Configure KUBE_MASTER - How the replication controller and scheduler find the apiserver
