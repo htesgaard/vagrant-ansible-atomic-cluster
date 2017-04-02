@@ -2,8 +2,17 @@
 - hosts: kubernetes-all
   become: true
   tasks:
-    - name: Backup default configutation on all nodes, copy all  .orig files
-      shell: 'for i in $(find /etc/kubernetes/ -type f ! -name "*.*"); do cp $i{,.orig}; done'
+    - name: Backup default k8s configutation on all nodes, provide all default files the .orig extension
+      shell: 'if [ `ls -1 /etc/kubernetes/*.orig 2>/dev/null | wc -l` != 0 ] ; then echo "no backup taken, backup exsists"; else `for i in $(find /etc/kubernetes/ -type f ! -name "*.*"); do cp $i{,.orig}; done` ; fi'
+      register: backup_k8s_default
+    - name: get version output
+      debug: var=backup_k8s_default.stdout_lines
+
+    - name: Backup default etcd configutation on all nodes, provide all default files the .orig extension
+      shell: 'if [ `ls -1 /etc/etcd/*.orig 2>/dev/null | wc -l` != 0 ] ; then echo "no backup taken, backup exsists"; else `for i in $(find /etc/etcd/ -type f ! -name "*."); do cp $i{,.orig} ; done` ; fi'
+      register: backup_etcd_default
+    - name: get version output
+      debug: var=backup_etcd_default.stdout_lines
 
     - name: Disable SELinux on all nodes
       selinux:
@@ -24,33 +33,33 @@
         dest: "/etc/etcd/etcd.conf"
         regexp: '^ETCD_LISTEN_CLIENT_URLS='
         line: 'ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"'
+        #line: 'ETCD_LISTEN_CLIENT_URLS="http://{{ ansible_host }}:2379,http://{{ ansible_host }}:4001"'
 
     # TODO remove port 4001
-    - name: Configure ETCD_ADVERTISE_CLIENT_URLS - only used for multi-instance etcd setups
+    - name: Configure ETCD_ADVERTISE_CLIENT_URLS
       lineinfile:
         dest: "/etc/etcd/etcd.conf"
         regexp: '^.?ETCD_ADVERTISE_CLIENT_URLS='
-        #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"'
-        line: 'ETCD_ADVERTISE_CLIENT_URLS="http://{{ ansible_host }}:2379,http://{{ ansible_host }}:4001"'
+        line: 'ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379,http://localhost:4001"'
 
-    - name: Enabled etcd debugging
-      lineinfile:
-        dest: "/etc/etcd/etcd.conf"
-        regexp: '^ETCD_DEBUG='
-        line: 'ETCD_DEBUG="true"'
-
-    - name: Set debugging levels
-      lineinfile:
-        dest: "/etc/etcd/etcd.conf"
-        regexp: '^ETCD_LOG_PACKAGE_LEVELS='
-        line: 'ETCD_LOG_PACKAGE_LEVELS="etcdmain=DEBUG,etcdserver=DEBUG,security=DEBUG"'
+#    - name: Enabled etcd debugging
+#      lineinfile:
+#        dest: "/etc/etcd/etcd.conf"
+#        regexp: '^ETCD_DEBUG='
+#        line: 'ETCD_DEBUG="true"'
+#
+#    - name: Set debugging levels
+#      lineinfile:
+#        dest: "/etc/etcd/etcd.conf"
+#        regexp: '^ETCD_LOG_PACKAGE_LEVELS='
+#        line: 'ETCD_LOG_PACKAGE_LEVELS="etcdmain=DEBUG,etcdserver=DEBUG,security=DEBUG"'
 
     - name: Enable and start etcd
       systemd:
         name: etcd
         enabled: yes
         state: restarted
-        #daemon_reload: yes
+        daemon_reload: yes
 
     - name: Wait for port 2379
       wait_for:

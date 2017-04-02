@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 cd /vagrant/ansible/playbooks/k8s-install/
-for i in *.yml; do ansible-playbook "$i" -vvv -i ../VAGRANT_INVENTORY; done
+for i in *.yml; do echo "$1" && ansible-playbook "$i" -i ../VAGRANT_INVENTORY; done
