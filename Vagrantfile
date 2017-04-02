@@ -79,7 +79,7 @@ RUBY_HERE_DOCUMENT1
     h.vm.synced_folder ".", "/vagrant", type: "virtualbox"
     h.vm.network "private_network", ip: "192.168.99.250", netmask: "255.255.255.0",
                  auto_config: true,
-                 virtualbox__intnet: "k8s-net"
+                 virtualbox__intnet: "atomic-net"
     h.vm.provider :virtualbox do |vb|
       vb.memory = 2048
       vb.gui = false
@@ -109,7 +109,7 @@ RUBY_HERE_DOCUMENT1
 
       atomic.vm.box = "centos/atomic-host"
       atomic.vm.hostname = "atomic#{index}"
-      atomic.vm.provision :shell, inline: "sed 's/127\.0\.0\.1.*atomic.*/192\.168\.99\.#{index+10} k8s#{index}/' -i /etc/hosts"
+      atomic.vm.provision :shell, inline: "sed 's/127\.0\.0\.1.*atomic.*/192\.168\.99\.#{index+10} atomic#{index}/' -i /etc/hosts"
 
       # centos hack to get the private_network going
       #atomic.vm.provision "shell", run: "always", inline: "ifup enp0s8"
@@ -120,9 +120,9 @@ RUBY_HERE_DOCUMENT1
 
       atomic.vm.network "private_network", ip: "192.168.99.#{index+10}", netmask: "255.255.255.0",
          auto_config: true,
-         virtualbox__intnet: "k8s-net"
+         virtualbox__intnet: "atomic-net"
       atomic.vm.provider "virtualbox" do |v|
-        #v.name = "k8s#{index}"
+        #v.name = "atomic#{index}"
         v.memory = 2048
         v.gui = false
       end

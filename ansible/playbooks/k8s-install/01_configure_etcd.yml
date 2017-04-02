@@ -23,16 +23,15 @@
       lineinfile:
         dest: "/etc/etcd/etcd.conf"
         regexp: '^ETCD_LISTEN_CLIENT_URLS='
-        line: 'ETCD_LISTEN_CLIENT_URLS="http://{{ master_ip }}:2379,http://{{ master_ip }}:4001"'
+        line: 'ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"'
 
     # TODO remove port 4001
-    - name: Configure ETCD_ADVERTISE_CLIENT_URLS
+    - name: Configure ETCD_ADVERTISE_CLIENT_URLS - only used for multi-instance etcd setups
       lineinfile:
         dest: "/etc/etcd/etcd.conf"
-        regexp: '^ETCD_ADVERTISE_CLIENT_URLS='
-        #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001,http://atomic0:2379,http://atomic0:4001"'
-        #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://localhost:2379,http://localhost:4001"'
-        line: 'ETCD_ADVERTISE_CLIENT_URLS="http://{{ master_ip }}:2379,http://{{ master_ip }}:4001"'
+        regexp: '^.?ETCD_ADVERTISE_CLIENT_URLS='
+        #line: 'ETCD_ADVERTISE_CLIENT_URLS="http://0.0.0.0:2379,http://0.0.0.0:4001"'
+        line: 'ETCD_ADVERTISE_CLIENT_URLS="http://{{ ansible_host }}:2379,http://{{ ansible_host }}:4001"'
 
     - name: Enabled etcd debugging
       lineinfile:
@@ -50,7 +49,7 @@
       systemd:
         name: etcd
         enabled: yes
-        state: started
+        state: restarted
         #daemon_reload: yes
 
     - name: Wait for port 2379
