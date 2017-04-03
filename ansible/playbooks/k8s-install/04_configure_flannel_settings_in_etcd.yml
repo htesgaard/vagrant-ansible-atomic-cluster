@@ -3,7 +3,7 @@
 - hosts: kubernetes-masters
   become_user: vagrant
   tasks:
-    - name: Copy flannel cibfiguration json
+    - name: Copy flannel configuration json
       copy:
         src: "{{ playbook_dir }}/resource/flannel-config-udp.json"
         dest: '~/flannel-config-udp.json'
