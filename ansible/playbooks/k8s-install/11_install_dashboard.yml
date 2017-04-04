@@ -14,7 +14,7 @@
     - name: Install dashboard 2
       debug:
         msg:
-          - "Check dashboard status using the command:"
+          - "Check dashboard status on the master node, that have kubectl configured, using the command:"
           - "watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system"
 
 
