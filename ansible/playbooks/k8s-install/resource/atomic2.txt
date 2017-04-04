@@ -1,0 +1,18 @@
+    1  cat /etc/kubernetes/kubelet
+    2  sudo systemctl status kubelet
+    3  sudo  /usr/bin/kubelet --help
+    4  exit
+    5  sudo systemctl status kubelet
+    6  sudo systemctl status kubelet -l
+    7  sudo systemctl status kubelet --help
+    8  sudo systemctl status kubelet -w
+    9  sudo systemctl status kubelet 
+   10  sudo systemctl status --help
+   11  sudo systemctl status kubelet -l
+   12  sudo journalctl -u kubelet
+   13  sudo journalctl -u kubelet -f
+   14  date
+   15  sudo journalctl -u kubelet -f
+   16  exit
+   17  history 
+   18  history > atomic2.txt 

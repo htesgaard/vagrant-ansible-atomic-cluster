@@ -1,0 +1,319 @@
+    1  kubectl get node
+    2  sudo kubectl version
+    3  kubectl cluster-info 
+    4  kubectl get node
+    5  kubectl version
+    6  kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+    7  kubectl namespace 
+    8  kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+    9  kubectl create -f https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/addon-manager/namespace.yaml
+   10  kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+   11  kubectl get po --all-namespaces 
+   12  watch -n 5 kubectl get po --all-namespaces 
+   13  kubectl get po --all-namespaces 
+   14  kubectl get pvc
+   15  kubectl get pvc --all-namespaces 
+   16  kubectl describe --help
+   17  kubectl get po --all-namespaces 
+   18  kubectl logs kubernetes-dashboard-4070529013-fy7v3
+   19  kubectl logs kubernetes-dashboard-4070529013-fy7v3 -p
+   20  kubectl describe podskubernetes-dashboard-4070529013-fy7v3
+   21  kubectl get po --all-namespaces 
+   22  kubectl describe pods kubernetes-dashboard-4070529013-fy7v3
+   23  kubectl describe pods kubernetes-dashboard-4070529013-fy7v3 --all-namespaces
+   24  kubectl describe pods kubernetes-dashboard
+   25  kubectl describe pods kubernetes-dashboard 
+   26  kubectl get po --all-namespaces -w
+   27  kubectl get po --all-namespaces
+   28  kubectl get po --all-namespaces -o wide
+   29  kubectl get pods --all-namespaces
+   30  exit
+   31  ssh atomic3 
+   32  curl https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+   33  pwd
+   34  curl https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
+   35  curl https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml > kubernetes-dashboard.yaml
+   36  ls
+   37  cat kubernetes-dashboard.yaml 
+   38  vi kubernetes-dashboard.yaml 
+   39  history 
+   40  kubectl create -f kubernetes-dashboard.yaml 
+   41  kubectl delete po kubernetes-dashboard
+   42  kubectl delete po kubernetes-dashboard --all
+   43  kubectl delete -f kubernetes-dashboard.yaml 
+   44  kubectl create -f kubernetes-dashboard.yaml 
+   45  history 
+   46  watch -n 5 kubectl get po --all-namespaces
+   47  watch -n 1 kubectl get po --all-namespaces
+   48  ssh atomic3 
+   49  kubectl delete -f kubernetes-dashboard.yaml 
+   50  history 
+   51  vi kubernetes-dashboard.yaml 
+   52  kubectl create -f kubernetes-dashboard.yaml 
+   53  vi kubernetes-dashboard.yaml 
+   54  kubectl create -f kubernetes-dashboard.yaml 
+   55  curl localhost:8080
+   56  cat /etc/kubernetes/
+   57  cat /etc/kubernetes/config
+   58  curl http://192.168.99.11:8080
+   59  curl http://atomic1:8080
+   60  history 
+   61  ssh atomic3 
+   62  history 
+   63  watch -n 1 kubectl get po --all-namespaces
+   64  ssh atomic3 
+   65  exit
+   66  ls
+   67  cat kubernetes-dashboard.yaml 
+   68  kubectl config view
+   69  sudo systemctl status kube-apiserver.service 
+   70  /usr/bin/kube-apiserver --help
+   71  sudo /usr/bin/kube-apiserver --help
+   72  sudo /usr/bin/kube-apiserver --help |grep --address
+   73  sudo /usr/bin/kube-apiserver --help |grep address
+   74  exit
+   75  kubectl get po
+   76  kubectl get po --all-namespaces 
+   77  kubectl get node 
+   78  which netstat
+   79  sudo netstat -tulpn
+   80  ls
+   81  cat kubernetes-dashboard.yaml 
+   82  history 
+   83  kubectl delete -f kubernetes-dashboard.yaml
+   84  kubectl get node 
+   85  kubectl get po --all-namespaces 
+   86  ls
+   87  cp kubernetes-dashboard.yaml kubernetes-dashboard_1.6.0.yaml 
+   88  vi kubernetes-dashboard_1.6.0.yaml 
+   89  ls
+   90  mv kubernetes-dashboard.yaml kubernetes-dashboard_v1.0.1.yaml
+   91  ls
+   92  mv *.yaml *.yml
+   93  mv kubernetes-dashboard_1.6.0.yaml kubernetes-dashboard_v1.6.0.yml 
+   94  mv kubernetes-dashboard_v1.0.1.yaml kubernetes-dashboard_v1.0.1.yml 
+   95  ls -la
+   96  kubectl create -f kubernetes-dashboard_v1.0.1.yml 
+   97  kubectl get po --all-namespaces 
+   98  Podkubectl logs --previous kubernetes-dashboard-2319016787-2uost
+   99  kubectl logs --previous kubernetes-dashboard-2319016787-2uost
+  100  kubectl describe pods kubernetes-dashboard-2319016787-2uost
+  101  kubectl describe pods kubernetes-dashboard
+  102  kubectl get po --all-namespaces -o wide
+  103  ip a
+  104  history 
+  105  sudo netstat -tulpn
+  106  nslookup atomic1
+  107  ls
+  108  cat kubernetes-dashboard_v1.0.1.yml 
+  109  ls
+  110  history 
+  111  cat /etc/hostname 
+  112  vi kubernetes-dashboard_1.6.0.yaml 
+  113  vi kubernetes-dashboard_v1.0.1.yml 
+  114  kubectl delete -f kubernetes-dashboard_v1.0.1.yml 
+  115  kubectl create -f kubernetes-dashboard_v1.0.1.yml 
+  116  kubectl get po --all-namespaces -o wide
+  117  kubectl describe kubernetes-dashboard-1050370878-1no4o
+  118  kubectl describe kubernetes-dashboard
+  119  kubectl get deployment kubernetes-dashboard
+  120  kubectl get deployment kubernetes-dashboad
+  121  kubectl get deployment 
+  122  kubectl list deployment 
+  123  kubectl list api-versions 
+  124  kubectl list api-versions --help
+  125  kubectl list namespace 
+  126  kubectl list namespace --help
+  127  kubectl l--help
+  128  kubectl --help
+  129  kubectl explain help
+  130  kubectl explain --help
+  131  kubectl explain pods
+  132  kubectl explain pods status
+  133  kubectl explain -h
+  134  kubectl explain po -h
+  135  kubectl explain pods -h
+  136  kubectl explain po --help
+  137  kubectl explain po
+  138  kubectl get pods --all-namespaces
+  139  ls
+  140  cat kubernetes-dashboard_v1.0.1.yml 
+  141  kubectl describe pods 
+  142  kubectl describe pods kubernetes-dashboard
+  143  kubectl describe pods kubernetes-dashboard 
+  144  kubectl describe pods --help
+  145  kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  146  kubectl delete -f kubernetes-dashboard_v1.0.1.yml 
+  147  vi kubernetes-dashboard_v1.6.0.yml 
+  148  kubectl create -f kubernetes-dashboard_v1.6.0.yml 
+  149  kubectl get po --all-namespaces 
+  150  kubectl describe pods kubernetes-dashboard --namespace=kube-system | a
+  151  kubectl describe pods kubernetes-dashboard --namespace=kube-system 
+  152  sudo docker ps
+  153  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 -logtostderr=true -domain=kubernetes.local -etcd-server="http://127.0.0.1:2379"
+  154  sudo docker ps
+  155  cat /var/log/messages 
+  156  sudo tail -f /var/log/messages 
+  157  sudo docker ps
+  158  docker stop --help
+  159  sudo docker stop 0ec8823edf45
+  160  sudo docker ps
+  161  sudo tail -f /var/log/messages 
+  162  cat /etc/kubernetes/coni
+  163  cat /etc/kubernetes/config
+  164  sudo su -
+  165  cd /etc/
+  166  sudo grep -r kubecfg-file *
+  167  cd ~
+  168  docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 -logtostderr=true -domain=kubernetes.local -etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  169  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 -logtostderr=true -domain=kubernetes.local -etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  170  docker ps
+  171  sudo docker ps
+  172  sudo tail -f /var/log/messages 
+  173  sudo docker ps
+  174  sudo docker stop e439f3cb2a8d
+  175  sudo docker ps
+  176  docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 -logtostderr=true -domain=kubernetes.local -etcd-server="http://127.0.0.1:2379" -kube-master-url="http://192.168.99.11:8080"
+  177  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 -logtostderr=true -domain=kubernetes.local -etcd-server="http://127.0.0.1:2379" -kube-master-url="http://192.168.99.11:8080"
+  178  sudo tail -f /var/log/messages 
+  179  sudo docker ps
+  180  docker stop 92039e2bcfea
+  181  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 --logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  182  sudo tail -f /var/log/messages 
+  183  sudo docker ps
+  184  sudo docker stop 9125f48525a1
+  185  sudo docker stop 92039e2bcfea
+  186  sudo docker ps
+  187  docker run --help
+  188  docker run --help|less
+  189  sudo tail -f /var/log/messages 
+  190  sudo tail /var/log/messages 
+  191  sudo tail 100 /var/log/messages 
+  192  sudo tail -B 100 /var/log/messages 
+  193  sudo tail -b 100 /var/log/messages 
+  194  sudo tail --help /var/log/messages 
+  195  sudo tail -n 100 /var/log/messages 
+  196  docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 --v=10 --logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  197  docker run --help
+  198  docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 --v=10 --logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  199  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 --v=10 --logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  200  sudo tail 100 /var/log/messages 
+  201  docker inspect --help
+  202  docker images
+  203  docker list images
+  204  docker images list
+  205  docker images
+  206  sudo docker images
+  207  sudo docker inspect a4892326f8cf
+  208  sudo docker inspect a4892326f8cf|less
+  209  sudo docker inspect a4892326f8cf|grep -i kube
+  210  sudo docker ps
+  211  sudo docker ps --help
+  212  sudo docker ps -a
+  213  sudo docker ps -a --no-trunc
+  214  history 
+  215  sudo tail -n 100 /var/log/messages
+  216  sudo docker ps -a --no-trunc
+  217  sudo docker stop 77f0f98be077
+  218  sudo docker ps -a --no-trunc
+  219  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 --logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080" 
+  220  docker ps
+  221  sudo docker ps
+  222  sudo tail -n 100 /var/log/messages
+  223  date
+  224  docker ps
+  225  sudo c13a0746d281
+  226  docker stop c13a0746d281
+  227  sudo docker stop c13a0746d281
+  228  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 -v=10 -logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  229  sudo tail -n 100 /var/log/messages
+  230  docker ps
+  231  sudo docker ps
+  232  sudo docker stope 6d9e26c2623
+  233  sudo docker stop e6d9e26c2623
+  234  sudo docker ps
+  235  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 v=10 logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  236  sudo tail -n 100 /var/log/messages
+  237  sudo docker ps
+  238  docker stop 71ed92404c06
+  239  sudo docker stop 71ed92404c06
+  240  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 v=10 logtostderr=true domain=kubernetes.local etcd-server="http://127.0.0.1:2379" kube-master-url="http://192.168.99.11:8080"
+  241  sudo docker ps
+  242  sudo tail -n 100 /var/log/messages
+  243  sudo docker ps
+  244  sudo docker stop 0deed2a3ed16
+  245  sudo docker ps
+  246  sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 v=10 logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+  247  ls
+  248  sudo docker ps
+  249  sudo tail -n 100 /var/log/messages
+  250  docker run -d --net=host --restart=always -e ETCD_MACHINES="http://127.0.0.1:2379" -e SKYDNS_DOMAIN="kubernetes.local" -e SKYDNS_ADDR="0.0.0.0:53" -e SKYDNS_NAMESERVERS="8.8.8.8:53,8.8.4.4:53" gcr.io/google_containers/skydns:1.0
+  251  sudo docker run -d --net=host --restart=always -e ETCD_MACHINES="http://127.0.0.1:2379" -e SKYDNS_DOMAIN="kubernetes.local" -e SKYDNS_ADDR="0.0.0.0:53" -e SKYDNS_NAMESERVERS="8.8.8.8:53,8.8.4.4:53" gcr.io/google_containers/skydns:1.0
+  252  sudo docker ps
+  253  sudo tail -n 100 /var/log/messages
+  254  sudo tail -f /var/log/messages
+  255  ls
+  256  clear
+  257  cat kubernetes-dashboard_v1.0.1.yml 
+  258  ls
+  259  exit
+  260   sudo docker --version
+  261  sudo docker ps
+  262  sudo docker stop 8c83dac20910 f06126eae6d9
+  263  sudo docker ps
+  264  exit
+  265  sudo tail -f /var/log/messages
+  266  sudo tail -f -n 50 /var/log/messages
+  267  exit
+  268  kubectl get po --all-namespaces 
+  269  history |grep kubectl
+  270  kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  271  exit
+  272  kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  273  kubectl delete -f kubernetes-dashboard_v1.1
+  274  kubectl delete -f kubernetes-dashboard_v1.6.0.yml 
+  275  sudo docker ps
+  276  kubectl create -f kubernetes-dashboard_v1.6.0.yml 
+  277  kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  278  exit
+  279  kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  280  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  281  docker ps
+  282  sudo docker ps
+  283  kubectl delete -f kubernetes-dashboard_v1.6.0.yml 
+  284  kubectl create -f kubernetes-dashboard_v1.6.0.yml 
+  285  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  286  history |grep netstat
+  287   sudo netstat -tulpn
+  288  exit
+  289  ssh atomic2 
+  290  exit
+  291  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  292  exit
+  293  ssh atomic2 
+  294  exit
+  295  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  296  kubectl get po -o wide --namespace=kube-system
+  297  kubectl delete -f kubernetes-dashboard_v1.6.0.yml 
+  298  kubectl create -f kubernetes-dashboard_v1.6.0.yml 
+  299  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  300  ls
+  301  exit
+  302  ls
+  303  rm kubernetes-dashboard_v1.*
+  304  exit
+  305  ls
+  306  cat kubernetes-dashboard_v1.6.0.yml 
+  307  kubectl replace --help
+  308  kubectl delete -f kubernetes-dashboard_v1.6.0.yml 
+  309  kubectl replace -f kubernetes-dashboard_v1.6.0.yml 
+  310  kubectl delete -f kubernetes-dashboard_v1.6.0.yml 
+  311  kubectl create -f kubernetes-dashboard_v1.6.0.yml 
+  312  kubectl delete -f kubernetes-dashboard_v1.6.0.yml 
+  313  exit
+  314  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  315  exit
+  316  watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system
+  317  exit
+  318  history 
+  319  history > atomic1.txt
