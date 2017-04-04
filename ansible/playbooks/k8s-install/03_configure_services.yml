@@ -47,12 +47,13 @@
         regexp: '^KUBE_ETCD_SERVERS='
         line: 'KUBE_ETCD_SERVERS="--etcd_servers=http://{{ master_ip }}:2379"'
 
+    # TODO: make components talk to the api securely, remove --insecure-bind-address argument - https://kubernetes.io/docs/admin/accessing-the-api/
     - name: Configure KUBE_API_ADDRESS
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_API_ADDRESS='
-        # '--bind-address' relates to 'secure-port' and '--address' to 'insecure-port'
-        line: 'KUBE_API_ADDRESS="--bind-address={{ master_ip }} --address={{ master_ip }}"'
+        # '--bind-address' relates to 'secure-port' and '--insecure-bind-address' to 'insecure-port'
+        line: 'KUBE_API_ADDRESS="--bind-address=0.0.0.0  --insecure-bind-address=0.0.0.0"'
 
     - name: Configure KUBE_API_PORT
       lineinfile:

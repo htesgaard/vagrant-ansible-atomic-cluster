@@ -1,0 +1,33 @@
+---
+- hosts: kubernetes-master
+  become: true
+  tasks:
+    # Sources:
+    # * http://www.projectatomic.io/blog/2015/10/setting-up-skydns/
+    - name: Install kube2sky
+      # TODO: change module to docker-container
+      docker:
+        name: kube2sky
+        image: gcr.io/google_containers/kube2sky:1.14
+        net: host
+        command: v=10 logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+        state: restarted
+      #command: sudo docker run -d --net=host --restart=always gcr.io/google_containers/kube2sky:1.14 v=10 logtostderr=true --domain=kubernetes.local --etcd-server="http://127.0.0.1:2379" --kube-master-url="http://192.168.99.11:8080"
+
+    - name: Install skydns
+      # TODO: change module to docker-container
+      docker:
+        name: skydns
+        image: gcr.io/google_containers/skydns:1.0
+        net: host
+        command:
+        state: restarted
+        env:
+          ETCD_MACHINES: http://127.0.0.1:2379
+          SKYDNS_DOMAIN: kubernetes.local
+          SKYDNS_ADDR: 0.0.0.0:53
+          # TODO: should SKYDNS_NAMESERVERS be Vestas DNS serveres
+          SKYDNS_NAMESERVERS: 8.8.8.8:53,8.8.4.4:53
+      #command: sudo docker run -d --net=host --restart=always -e ETCD_MACHINES="http://127.0.0.1:2379" -e SKYDNS_DOMAIN="kubernetes.local" -e SKYDNS_ADDR="0.0.0.0:53" -e SKYDNS_NAMESERVERS="8.8.8.8:53,8.8.4.4:53" gcr.io/google_containers/skydns:1.0
+
+

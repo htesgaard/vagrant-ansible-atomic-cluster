@@ -1,5 +1,5 @@
 ---
-- hosts: kubernetes-masters
+- hosts: kubernetes-master
   become_user: "{{ user_to_configure_kubectl_for }}"
   tasks:
     - name: Configure kubectl 1

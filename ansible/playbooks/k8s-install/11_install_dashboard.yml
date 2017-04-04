@@ -1,0 +1,20 @@
+---
+- hosts: kubernetes-master
+  become_user: "{{ user_to_configure_kubectl_for }}"
+  tasks:
+    - name: Copy dashboard pod description configuration to master
+      template:
+        src: "{{ playbook_dir }}/resource/kubernetes-dashboard_v1.6.0.yml"
+        dest: '~/kubernetes-dashboard_v1.6.0.yml'
+    - name: Remove dashboard if present
+      command: "kubectl delete -f ~/kubernetes-dashboard_v1.6.0.yml"
+      ignore_errors: yes
+    - name: Install dashboard
+      command: "kubectl create -f ~/kubernetes-dashboard_v1.6.0.yml"
+    - name: Install dashboard 2
+      debug:
+        msg:
+          - "Check dashboard status using the command:"
+          - "watch -n 2 kubectl describe pods kubernetes-dashboard --namespace=kube-system"
+
+

@@ -25,10 +25,9 @@
     - name: Configure KUBELET_ARGS - add your own arguments
       lineinfile:
         dest: "/etc/kubernetes/kubelet"
-        regexp: '^KUBELET_ARGS='
+        regexp: '^#?KUBELET_ARGS='
         #line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
         line: 'KUBELET_ARGS=""'
-
 
     - name: Reload kubelet
       systemd:

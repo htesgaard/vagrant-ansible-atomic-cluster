@@ -1,0 +1,19 @@
+---
+- hosts: kubernetes-kubelets
+  become: true
+  tasks:
+
+    - name: Configure KUBELET_ARGS - add your own arguments
+      lineinfile:
+        dest: "/etc/kubernetes/kubelet"
+        regexp: '^#?KUBELET_ARGS='
+        #line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
+        line: KUBELET_ARGS="--cluster-dns={{ master_ip }} --cluster-domain=kubernetes.local"
+
+    - name: Reload kubelet
+      systemd:
+        name: kubelet
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
