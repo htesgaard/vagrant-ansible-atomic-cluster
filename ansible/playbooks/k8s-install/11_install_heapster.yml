@@ -1,0 +1,27 @@
+---
+- hosts: kubernetes-master
+  become_user: "{{ user_to_configure_kubectl_for }}"
+  # To get extra Container Cluster Monitoring and Performance Analysis in the Kubernetes Dashboard we install Heapster
+  # Heapster currently supports Kubernetes and CoreOS natively. Heapster is compatible with kubernetes versions starting from v1.0.6 only
+  # We're currently running k8s version 1.2, so we are good to go. More details:
+  # https://github.com/kubernetes/heapster/
+  #
+  # For troubleshooting see:
+  # https://github.com/kubernetes/heapster/blob/master/docs/influxdb.md#troubleshooting-guide
+  tasks:
+    - name: Copy Heapster to master for installation
+      copy:
+        src: "{{ playbook_dir }}/resource/heapster-master"
+        dest: "{{ ansible_env.HOME}}"
+    - name: Remove dashboard if present
+      command: "kubectl delete -f ~/heapster-master/deploy/kube-config/influxdb/"
+      ignore_errors: yes
+    - name: Install dashboard
+      command: "kubectl create -f ~/heapster-master/deploy/kube-config/influxdb/"
+    - name: Install dashboard 2
+      debug:
+        msg:
+          - "Check dashboard status on the master node, that have kubectl configured, using the command:"
+          - "watch -n 2 kubectl get pods --namespace=kube-system"
+
+
