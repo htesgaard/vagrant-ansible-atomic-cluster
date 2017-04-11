@@ -21,6 +21,7 @@
         state: directory
 
     - name: Download and extract easy-rsa
+    # https://kubernetes.io/docs/admin/authentication/#easyrsa
       unarchive:
         src: https://storage.googleapis.com/kubernetes-release/easy-rsa/easy-rsa.tar.gz
         dest: /tmp/ansible/
