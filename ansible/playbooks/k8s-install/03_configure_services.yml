@@ -73,13 +73,18 @@
         regexp: '^KUBE_SERVICE_ADDRESSES='
         line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.254.0.0/16"'
 
+    - name: Copy Basic-Auth credentials CSV file
+      copy:
+        src: "{{ playbook_dir }}/resource/k8s_bafile.csv"
+        dest: '/etc/kubernetes/k8s-bafile.csv'
+
     # We’ll also add parameters for the certificates we generated earlier.
     # Add your own certs!
     - name: Configure KUBE_API_ARGS
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_API_ARGS='
-        line: 'KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --service-account-key-file=/etc/kubernetes/certs/server.crt"'
+        line: 'KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --service-account-key-file=/etc/kubernetes/certs/server.crt --basic-auth-file=/etc/kubernetes/k8s-bafile.csv"'
 
     - name: Configure KUBE_CONTROLLER_MANAGER_ARGS
       lineinfile:
