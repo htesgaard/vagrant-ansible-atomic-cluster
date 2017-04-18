@@ -84,13 +84,13 @@
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_API_ARGS='
-        line: 'KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/server.crt --tls-private-key-file=/etc/kubernetes/certs/server.key --client-ca-file=/etc/kubernetes/certs/ca.crt --service-account-key-file=/etc/kubernetes/certs/server.crt --basic-auth-file=/etc/kubernetes/k8s-bafile.csv"'
+        line: 'KUBE_API_ARGS="--tls-cert-file=/etc/kubernetes/certs/apiserver.crt --tls-private-key-file=/etc/kubernetes/certs/apiserver.key --client-ca-file=/etc/kubernetes/certs/ca.crt --service-account-key-file=/etc/kubernetes/certs/apiserver.key --basic-auth-file=/etc/kubernetes/k8s-bafile.csv"'
 
     - name: Configure KUBE_CONTROLLER_MANAGER_ARGS
       lineinfile:
         dest: "/etc/kubernetes/controller-manager"
         regexp: '^KUBE_CONTROLLER_MANAGER_ARGS='
-        line: 'KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file=/etc/kubernetes/certs/server.key --root-ca-file=/etc/kubernetes/certs/ca.crt"'
+        line: 'KUBE_CONTROLLER_MANAGER_ARGS="--service-account-private-key-file=/etc/kubernetes/certs/apiserver.key --root-ca-file=/etc/kubernetes/certs/ca.crt"'
 
 
     - name: Enable and start kube-controller-manager

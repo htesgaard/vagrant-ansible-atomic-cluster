@@ -1,0 +1,10 @@
+---
+- hosts: ansible-controller
+#  become_user: "{{ user_to_configure_kubectl_for }}"
+  become: true
+  tasks:
+    - name: Download and install kubectl v1.2.0
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.2.0/bin/linux/amd64/kubectl
+        dest: /usr/local/bin/kubectl
+        mode: 0755

@@ -47,23 +47,23 @@
         path: /etc/kubernetes/certs
         state: directory
 
-    - name: Copy ca.crt to kuubernetes cert folder
+    - name: Copy ca.crt to K8s cert folder
       copy:
         remote_src: true #copy from the target machine
         src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/ca.crt
         dest: /etc/kubernetes/certs/ca.crt
 
-    - name: Copy issued/server.crt to kuubernetes cert folder
+    - name: Copy issued/apiserver.crt to K8s cert folder
       copy:
         remote_src: true #copy from the target machine
         src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/issued/server.crt
-        dest: /etc/kubernetes/certs/server.crt
+        dest: /etc/kubernetes/certs/apiserver.crt
 
-    - name: Copy private/server.key to kuubernetes cert folder
+    - name: Copy private/apiserver.key to K8s cert folder
       copy:
         remote_src: true #copy from the target machine
         src: /tmp/ansible/easy-rsa-master/easyrsa3/pki/private/server.key
-        dest: /etc/kubernetes/certs/server.key
+        dest: /etc/kubernetes/certs/apiserver.key
 
     - name: Change owner of the cert folder and files
       file:
@@ -80,14 +80,14 @@
       when: f.stat.isfile is defined and p.stat.isfile
 
     - stat:
-        path: /etc/kubernetes/certs/server.crt
+        path: /etc/kubernetes/certs/apiserver.crt
       register: f
     - debug:
         msg: "Path exists and is a file"
       when: f.stat.isfile is defined and p.stat.isfile
 
     - stat:
-        path: /etc/kubernetes/certs/server.key
+        path: /etc/kubernetes/certs/apiserver.key
       register: f
     - debug:
         msg: "Path exists and is a file"

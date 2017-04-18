@@ -6,7 +6,7 @@
       command: "kubectl config set-cluster mycluster --certificate-authority=/etc/kubernetes/certs/ca.crt"
 
     - name: Configure kubectl 2
-      command: "kubectl config set-credentials mycluster --certificate-authority=/etc/kubernetes/certs/ca.crt --client-key=/etc/kubernetes/certs/server.key --client-certificate=/etc/kubernetes/certs/server.crt"
+      command: "kubectl config set-credentials mycluster --certificate-authority=/etc/kubernetes/certs/ca.crt --client-key=/etc/kubernetes/certs/apiserver.key --client-certificate=/etc/kubernetes/certs/apiserver.crt"
 
     - name: Configure kubectl 3
       command: "kubectl config set-cluster default-cluster --server=http://{{ master_ip }}:8080"
