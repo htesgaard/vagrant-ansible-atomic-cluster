@@ -1,10 +1,63 @@
 ---
-- hosts: ansible-controller
-#  become_user: "{{ user_to_configure_kubectl_for }}"
+- hosts: kubernetes-master
   become: true
   tasks:
-    - name: Download and install kubectl v1.2.0
+    - name: Fetch K8s ca.crt
+      fetch:
+        src: /etc/kubernetes/certs/ca.crt to ~/.kube folder in the vagrant user home on the controller
+        dest: /home/{{ user_to_configure_kubectl_for }}/.kube/ca.crt
+        flat: true
+
+    - name: Fetch K8s apiserver.crt
+      fetch:
+        src: /etc/kubernetes/certs/apiserver.crt to ~/.kube folder in the vagrant user home on the controller
+        dest: /home/{{ user_to_configure_kubectl_for }}/.kube/apiserver.crt
+        flat: true
+
+    - name: Fetch K8s apiserver.key to ~/.kube folder in the vagrant user home on the controller
+      fetch:
+        src: /etc/kubernetes/certs/apiserver.key
+        dest: /home/{{ user_to_configure_kubectl_for }}/.kube/apiserver.key
+        flat: true
+
+- hosts: ansible-controller
+#  become_user: "{{ user_to_configure_kubectl_for }}"
+  become_user: "{{ user_to_configure_kubectl_for }}"
+  tasks:
+    - name: Download and install kubectl v1.6.1
       get_url:
-        url: https://storage.googleapis.com/kubernetes-release/release/v1.2.0/bin/linux/amd64/kubectl
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.6.1/bin/linux/amd64/kubectl
         dest: /usr/local/bin/kubectl
+        force: true
         mode: 0755
+      become: true
+      become_user: root
+
+    - name: Configuring Docker to use the cluster registry cache
+      lineinfile:
+        dest: "/home/{{ user_to_configure_kubectl_for }}/.bashrc"
+        regexp: '^source +<.*(kubectl +completion +bash *)'
+        line: "source <(kubectl completion bash)"
+
+    - name: Configure kubectl 1
+      command: "kubectl config set-cluster mycluster --certificate-authority=.kube/ca.crt"
+
+    - name: Configure kubectl 2
+      command: "kubectl config set-credentials mycluster --certificate-authority=.kube/ca.crt --client-key=.kube/apiserver.key --client-certificate=.kube/apiserver.crt"
+
+    - name: Configure kubectl 3
+      command: "kubectl config set-cluster default-cluster --server=http://{{ master_ip }}:8080"
+
+    - name: Configure kubectl 3
+      command: "kubectl config set-context default-context --cluster=default-cluster --user=default-admin"
+
+    - name: Configure kubectl 4
+      command: "kubectl config use-context default-context"
+
+
+
+
+
+
+
+
