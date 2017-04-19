@@ -1,0 +1,44 @@
+---
+- hosts: ansible-controller
+  become: true
+  tasks:
+    - name: Enshure git on controller
+      yum:
+        name: git
+
+    # Configure NFS on the controller server
+    # Resources:
+    # - https://severalnines.com/blog/wordpress-application-clustering-using-kubernetes-haproxy-and-keepalived
+    # - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/getting_started_with_kubernetes/get_started_provisioning_storage_in_kubernetes#nfs
+    - name: Install the latest version of nfs
+      yum:
+        name: nfs-utils
+    - name: Create NFS folder /var/nfs on controller
+      file:
+        path: /var/nfs
+        state: directory
+        owner: nfsnobody
+        group: nfsnobody
+        mode: 0755
+
+    - name: Configure NFS file /etc/exports
+      lineinfile:
+        dest: "/etc/exports"
+        regexp: '^/var/nfs.*'
+        line: "/var/nfs        192.168.99.0/24(rw,sync,no_root_squash,no_all_squash)"
+        create: yes
+
+    - name: Enable and start rpcbind
+      systemd:
+        name: rpcbind
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
+    - name: Enable and start nfs-server
+      systemd:
+        name: nfs-server
+        enabled: yes
+        state: restarted
+        daemon_reload: yes
+
