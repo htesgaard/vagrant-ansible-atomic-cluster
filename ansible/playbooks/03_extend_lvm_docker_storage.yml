@@ -1,0 +1,19 @@
+---
+- hosts: kubernetes-all
+  become: true
+  tasks:
+    # http://www.projectatomic.io/docs/docker-storage-recommendation/
+    - name: Stop docker
+      systemd:
+        name: docker
+        state: stopped
+        daemon_reload: yes
+    - name: Reset docker storage
+      shell: atomic storage reset
+    - name: Configure the extra disk
+      lineinfile:
+        dest: /etc/sysconfig/docker-storage-setup
+        regexp: '^DEVS=.*'
+        line: 'DEVS="/dev/sdb"'
+    - name: Reset docker storage
+      shell: docker-storage-setup
