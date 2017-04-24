@@ -26,6 +26,10 @@ Vagrant.configure("2") do |config|
 
 
   # force virtualbox as mechanism for shared folders
+  # A VirtualBox bug seams to require that you for now don't upgrade to a later version than 5.0.16
+  # Bug details:
+  # -  https://github.com/mitchellh/vagrant/issues/7695
+  # -  https://www.virtualbox.org/ticket/14651
   config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
 
   config.hostmanager.enabled = true
@@ -109,7 +113,6 @@ RUBY_HERE_DOCUMENT1
 
       atomic.vm.box = "centos/atomic-host"
       atomic.vm.hostname = "atomic#{index}"
-      atomic.vm.provision :shell, inline: "sed 's/127\.0\.0\.1.*atomic.*/192\.168\.99\.#{index+10} atomic#{index}/' -i /etc/hosts"
 
       # centos hack to get the private_network going
       #atomic.vm.provision "shell", run: "always", inline: "ifup enp0s8"
@@ -118,13 +121,27 @@ RUBY_HERE_DOCUMENT1
       atomic.vm.provision "shell", inline: "rm /home/vagrant/vagrant.pub"
       atomic.vm.provision "shell", inline: "echo 'LC_CTYPE=\"en_US.UTF-8\"' | sudo tee -a /etc/environment"
 
+      atomic.vm.provision :shell, inline: "sed 's/127\.0\.0\.1.*atomic.*/192\.168\.99\.#{index+10} atomic#{index}/' -i /etc/hosts"
+
       atomic.vm.network "private_network", ip: "192.168.99.#{index+10}", netmask: "255.255.255.0",
          auto_config: true,
          virtualbox__intnet: "atomic-net"
+
       atomic.vm.provider "virtualbox" do |v|
-        #v.name = "atomic#{index}"
+        v.name = "atomic#{index}"
         v.memory = 2048
         v.gui = false
+
+        # Get disk path
+        line = `VBoxManage list systemproperties | grep "Default machine folder"`
+        vb_machine_folder = line.split(':')[1].strip()
+        second_disk = File.join(vb_machine_folder, v.name, 'local_container_images_storage.vdi')
+
+        # Create and attach disk
+        unless File.exist?(second_disk)
+          v.customize ['createhd', '--filename', second_disk, '--format', 'VDI', '--size', 60 * 1024]
+        end
+        v.customize ['storageattach', :id, '--storagectl', 'IDE', '--port', 0, '--device', 1, '--type', 'hdd', '--medium', second_disk]
       end
 
 

@@ -25,7 +25,8 @@
       lineinfile:
         dest: "/etc/exports"
         regexp: '^/var/nfs.*'
-        line: "/var/nfs        192.168.99.0/24(rw,sync,no_root_squash,no_all_squash)"
+        #line: "/var/nfs        192.168.99.0/24(rw,sync,no_root_squash,no_all_squash)"
+        line: "/var/nfs        192.168.99.0/24(rw,sync,root_squash)"
         create: yes
 
     - name: Enable and start rpcbind

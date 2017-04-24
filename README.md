@@ -195,7 +195,7 @@ The intention is not to allow tainting the kernel.
 
 # Common errors
 
-If you get this error try running `vagrant up` again
+If you get this error:  
 ```bash
 ==> control: Mounting shared folders...
     control: /vagrant => /Users/helge/projects/vagrant/vagrant-ansible-atomic-cluster
@@ -212,8 +212,10 @@ The error output from the command was:
 
 mount: unknown filesystem type 'vboxsf'
 ```
+try running `vagrant up control` or `vagrant provision control` again
 
-Calling vagrant up will cause this error on all the atomic boxes.
+
+Calling vagrant up will cause this error on all the atomic[1-3] nodes.
 
 ```bash
 ==> atomic1: Configuring and enabling network interfaces...
