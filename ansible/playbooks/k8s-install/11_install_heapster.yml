@@ -14,6 +14,9 @@
         src: "{{ playbook_dir }}/resource/heapster-master"
         dest: "{{ ansible_env.HOME}}"
     - name: Remove dashboard if present
+      command: 'kubectl create namespace "kube-system"'
+      ignore_errors: yes
+    - name: Remove dashboard if present
       command: "kubectl delete -f ~/heapster-master/deploy/kube-config/influxdb/"
       ignore_errors: yes
     - name: Install dashboard
