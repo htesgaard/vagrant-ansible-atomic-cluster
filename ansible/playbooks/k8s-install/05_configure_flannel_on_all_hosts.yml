@@ -42,7 +42,7 @@
       lineinfile:
         dest: "/etc/sysconfig/flanneld"
         regexp: '^#?FLANNEL_OPTIONS='
-        line: 'FLANNEL_OPTIONS="--iface={{ kubernetes_nic_name }}"'
+        line: 'FLANNEL_OPTIONS="-iface={{ kubernetes_nic_name }} -ip-masq=true"'
 
 #    - name: Copy locked /usr/lib/systemd/system/flanneld.service to unlocked /etc/systemd/system/flanneld.service
 #      copy:

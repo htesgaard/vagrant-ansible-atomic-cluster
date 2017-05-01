@@ -61,17 +61,23 @@
         regexp: '^KUBE_API_PORT='
         line: 'KUBE_API_PORT="--secure-port=6443 --insecure-port=8080"'
 
-    # If you need to modify the set of IPs that Kubernetes assigns to services,
-    # change the KUBE_SERVICE_ADDRESSES value. Since this guide is using the 192.168.122.0/24
-    # and 172.16.0.0/12 networks, we can leave the default. This address space needs to be unused elsewhere,
-    # but doesn’t need to be reachable from either of the other networks.
+    # Cluster-IP range used for services. These IPs are the internal IPs
+    # KUBE_SERVICE_ADDRESSES:
+    # The address range is used by Kubernetes to assign to Kubernetes services.
+    # - In the example just shown, the address range of 10.254.0.0/16 consumes a set of 10.254 subnets that can be assigned by Kubernetes as needed. For example, 10.254.1.X, 10.254.2.X and so on.
+    # - Make sure this address range isn’t used anywhere else in your environment.
+    # - Each address range that is assigned is only used within a node and is not routable outside of that node.
+    # - This address range must be different than the range used by flannel. (Flannel address ranges are assigned to pods.)
     #
-    # Address range to use for services
     - name: Configure KUBE_SERVICE_ADDRESSES
       lineinfile:
         dest: "/etc/kubernetes/apiserver"
         regexp: '^KUBE_SERVICE_ADDRESSES='
-        line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.254.0.0/16"'
+        #line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.254.0.0/16"'
+        #line: 'KUBE_SERVICE_ADDRESSES="--portal_net=10.0.0.0/16"'
+        line: 'KUBE_SERVICE_ADDRESSES="--service-cluster-ip-range=172.29.0.0/16"' #--service-cluster-ip-range formerly --portal_net
+        # etcdctl rm /registry/services/specs/default/kubernetes
+
 
     - name: Copy Basic-Auth credentials CSV file
       copy:

@@ -54,6 +54,20 @@
     - name: Configure kubectl 4
       command: "kubectl config use-context default-context"
 
+#- hosts: kubernetes-kubelets
+#  become: true
+#  tasks:
+#    - name: copy kubectl configuration to kubelets
+#      copy:
+#        src: /home/vagrant/.kube/
+#        dest: /home/vagrant/.kube/
+#        force: yes
+#        directory_mode: yes
+#        owner: "{{ user_to_configure_kubectl_for }}"
+#        group: "{{ user_to_configure_kubectl_for }}"
+
+
+
 
 
 

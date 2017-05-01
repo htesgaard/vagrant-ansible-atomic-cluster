@@ -29,6 +29,14 @@
         #line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
         line: 'KUBELET_ARGS=""'
 
+    - name: Configure KUBE_PROXY_ARGS - set --cluster-cidr on kube-proxy
+      lineinfile:
+        dest: "/etc/kubernetes/proxy"
+        regexp: '^#?KUBE_PROXY_ARGS='
+        #line: 'KUBELET_ARGS="--auth_path=/var/lib/kubelet/auth"'
+        line: 'KUBE_PROXY_ARGS="--cluster-cidr=172.28.0.0/16"'
+
+
     - name: Reload kubelet
       systemd:
         name: kubelet
